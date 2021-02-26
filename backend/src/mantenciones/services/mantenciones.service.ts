@@ -17,14 +17,14 @@ export class MantencionesService {
         return this.mantencionesRepo.findOne(man_id);
       }
     
-      create(usr: Mantenciones) {
-        return this.mantencionesRepo.save(usr);
+      create(mantencion: Mantenciones) {
+        return this.mantencionesRepo.save(mantencion);
       }
     
-      async update(man_id: number, usr: Mantenciones) {
+      async update(man_id: number, mantencion: Mantenciones) {
         const manFound = await this.mantencionesRepo.findOne(man_id);
-        this.mantencionesRepo.merge(manFound, usr);
-        return this.mantencionesRepo.save(usr);
+        this.mantencionesRepo.merge(manFound, mantencion);
+        return this.mantencionesRepo.save(mantencion);
       }
     
       async remove(man_id: number) {
