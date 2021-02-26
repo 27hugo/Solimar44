@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Mantenciones } from './../entity/mantenciones.entity';
+import { Mantenciones } from './../entities/mantenciones.entity';
 
 @Injectable()
 export class MantencionesService {
@@ -22,8 +22,8 @@ export class MantencionesService {
       }
     
       async update(man_id: number, usr: Mantenciones) {
-        const usrFound = await this.mantencionesRepo.findOne(man_id);
-        this.mantencionesRepo.merge(usrFound, usr);
+        const manFound = await this.mantencionesRepo.findOne(man_id);
+        this.mantencionesRepo.merge(manFound, usr);
         return this.mantencionesRepo.save(usr);
       }
     
