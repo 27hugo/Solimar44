@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuariosModule } from './usuarios/usuarios.module';
+import { MantencionesModule } from './mantenciones/mantenciones.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UsuariosModule } from './usuarios/usuarios.module';
       retryAttempts: 10
     }),
     UsuariosModule,
+    MantencionesModule,
   ],
   controllers: [],
   providers: [],
