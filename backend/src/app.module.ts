@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { MantencionesModule } from './mantenciones/mantenciones.module';
 import { AutosModule } from './autos/autos.module';
+import { LicenciasModule } from './licencias/licencias.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AutosModule } from './autos/autos.module';
     UsuariosModule,
     MantencionesModule,
     AutosModule,
+    LicenciasModule,
   ],
   controllers: [],
   providers: [],
