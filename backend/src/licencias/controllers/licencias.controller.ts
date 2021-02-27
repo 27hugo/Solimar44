@@ -4,7 +4,7 @@ import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common'
 
 import { LicenciasService } from './../services/licencias.service';
 
-@Controller('api/licencia')
+@Controller('api/licencias')
 //@UseGuards(new AuthGuard())
 export class LicenciasController {
     

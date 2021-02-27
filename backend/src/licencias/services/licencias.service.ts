@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Licencia } from './../entities/Licencia.entity';
+import { Licencias } from '../entities/licencias.entity';
 
 @Injectable()
 export class LicenciasService {
     constructor(
-        @InjectRepository(Licencia) private licenciasRepo: Repository<Licencia>,
+        @InjectRepository(Licencias) private licenciasRepo: Repository<Licencias>,
       ) {}
     
       findAll() {
@@ -17,11 +17,11 @@ export class LicenciasService {
         return this.licenciasRepo.findOne(lic_id);
       }
     
-      create(licencia: Licencia) {
+      create(licencia: Licencias) {
         return this.licenciasRepo.save(licencia);
       }
     
-      async update(lic_id: number, licencia: Licencia) {
+      async update(lic_id: number, licencia: Licencias) {
         const licenciaFound = await this.licenciasRepo.findOne(lic_id);
         this.licenciasRepo.merge(licenciaFound, licencia);
         return this.licenciasRepo.save(licencia);
