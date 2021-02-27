@@ -4,6 +4,7 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { MantencionesModule } from './mantenciones/mantenciones.module';
 import { AutosModule } from './autos/autos.module';
 import { LicenciasModule } from './licencias/licencias.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { LicenciasModule } from './licencias/licencias.module';
     MantencionesModule,
     AutosModule,
     LicenciasModule,
+    RolesModule,
   ],
   controllers: [],
   providers: [],
