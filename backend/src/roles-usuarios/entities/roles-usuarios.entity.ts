@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Roles } from 'src/roles/entities/roles.entity';
+import { Usuarios } from 'src/usuarios/entities/usuarios.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
 export class RolesUsuarios {
@@ -11,5 +13,13 @@ export class RolesUsuarios {
 
   @Column()
   rol_id: number;
+
+  @ManyToOne( type => Roles, { onDelete: 'CASCADE' } )
+  @JoinColumn({ name: 'rol_id', referencedColumnName: 'rol_id' })
+  roles: Roles
+
+  @ManyToOne( type => Usuarios, { onDelete: 'CASCADE' } )
+  @JoinColumn({ name: 'usr_id', referencedColumnName: 'usr_id' })
+  usuarios: Usuarios
 
 }

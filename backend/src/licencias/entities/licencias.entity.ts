@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Usuarios } from 'src/usuarios/entities/usuarios.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
 export class Licencias {
@@ -17,4 +18,9 @@ export class Licencias {
 
   @Column()
   lic_vencimiento: Date;
+
+  @ManyToOne( type => Usuarios, { onDelete: 'CASCADE' } )
+  @JoinColumn({ name: 'usr_id', referencedColumnName: 'usr_id' })
+  usuarios: Usuarios
+
 }

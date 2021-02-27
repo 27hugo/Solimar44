@@ -4,7 +4,7 @@ import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common'
 
 import { UsuariosAutosService } from './../services/usuarios-autos.service';
 
-@Controller('api/usuarios')
+@Controller('api/usuarios-autos')
 //@UseGuards(new AuthGuard())
 export class UsuariosAutosController {
 
