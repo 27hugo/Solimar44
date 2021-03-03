@@ -9,7 +9,4 @@ export class Roles {
   @Column()
   rol_nombre: string;
 
-  @Column()
-  rol_permisos: number;
-
 }
