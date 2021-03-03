@@ -18,6 +18,15 @@ export class UsuariosAutosService {
     return this.usuariosAutosRepo.findOne(uas_id);
   }
 
+  findByUsrId(usr_id: number) {
+    return this.usuariosAutosRepo.find({ 
+      where: { 
+        usr_id: usr_id 
+      },
+      relations: ['autos'],
+    });
+  }
+
   create(uas: UsuariosAutos) {
     return this.usuariosAutosRepo.save(uas);
   }
