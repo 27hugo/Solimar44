@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Licencias } from 'src/licencias/entities/licencias.entity';
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Usuarios {
@@ -21,6 +22,12 @@ export class Usuarios {
   usr_direccion: string;
 
   @Column()
+  usr_correo: string;
+
+  @Column()
+  usr_telefono: number;
+
+  @Column()
   usr_estado: string;
 
   @Column()
@@ -32,10 +39,11 @@ export class Usuarios {
   @Column()
   usr_cdi_reverso: string;
 
-  @Column()
-  usr_lic_frente: string;
+  @Column({ nullable: true })
+  lic_id: number;
 
-  @Column()
-  usr_lic_reverso: string;
+  @ManyToOne( type => Licencias, { onDelete: 'CASCADE' } )
+  @JoinColumn({ name: 'lic_id', referencedColumnName: 'lic_id' })
+  licencias: Licencias
 
 }
