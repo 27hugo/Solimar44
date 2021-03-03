@@ -17,7 +17,7 @@ import { TiposLicenciasModule } from './tipos-licencias/tipos-licencias.module';
       port: 3306,
       username: 'root',
       password: 'password',
-      database: 'mydb',
+      database: 'solimar44',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
       retryDelay: 3000,
