@@ -11,11 +11,11 @@ import { UsuariosAutosModule } from './usuarios-autos/usuarios-autos.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: 'mariadb',
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: 'password',
       database: 'mydb',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
