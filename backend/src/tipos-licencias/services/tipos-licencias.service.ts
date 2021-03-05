@@ -16,6 +16,10 @@ export class TiposLicenciasService {
       findOne(tip_id: number) {
         return this.tiposLicenciasRepo.findOne(tip_id);
       }
+
+      async findByLicId(lic_id: number) {
+        return await this.tiposLicenciasRepo.find({ where: { lic_id: lic_id } });
+      }
     
       create(rol: TiposLicencias) {
         return this.tiposLicenciasRepo.save(rol);

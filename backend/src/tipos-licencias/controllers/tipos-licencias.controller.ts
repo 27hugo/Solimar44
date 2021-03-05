@@ -21,6 +21,11 @@ export class TiposLicenciasController {
       findOne(@Param('tip_id') tip_id: number) {
         return this.tiposLicenciasService.findOne(tip_id);
       }
+
+      @Get('licencia/:lic_id')
+      async findByLicId(@Param('lic_id') lic_id: number) {
+        return await this.tiposLicenciasService.findByLicId(lic_id);
+      }
     
       @Post()
       create(@Body() body: any) {
