@@ -13,8 +13,8 @@ export class LicenciasService {
         return this.licenciasRepo.find();
       }
     
-      findOne(lic_id: number) {
-        return this.licenciasRepo.findOne(lic_id);
+      async findOne(lic_id: number) {
+        return await this.licenciasRepo.findOne(lic_id);
       }
     
       create(licencia: Licencias) {
