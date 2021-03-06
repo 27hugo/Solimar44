@@ -18,13 +18,16 @@ export class Usuarios {
   @Column()
   usr_fnacimiento: Date;
 
-  @Column()
+  @Column({ nullable: true })
   usr_direccion: string;
 
   @Column({ unique: true, nullable: true })
   usr_correo: string;
 
-  @Column({ nullable: true })
+  @Column()
+  usr_contrasena: string;
+
+  @Column()
   usr_telefono: number;
 
   @Column()
@@ -33,10 +36,10 @@ export class Usuarios {
   @Column({ unique: true, nullable: true })
   usr_foto: string;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ unique: true })
   usr_cdi_frente: string;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ unique: true })
   usr_cdi_reverso: string;
 
   @Column({ nullable: true, unique: true })
