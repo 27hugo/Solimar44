@@ -12,10 +12,10 @@ export class Licencias {
   @Column()
   lic_vencimiento: Date;
 
-  @Column()
+  @Column({ unique: true })
   lic_frente: string;
 
-  @Column()
+  @Column({ unique: true })
   lic_reverso: string;
 
   

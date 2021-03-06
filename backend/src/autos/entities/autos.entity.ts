@@ -6,7 +6,7 @@ export class Autos {
   @PrimaryGeneratedColumn()
   aut_id: number;
 
-  @Column()
+  @Column({ unique: true })
   aut_patente: string;
 
   @Column()
@@ -15,7 +15,7 @@ export class Autos {
   @Column()
   aut_marca: string;
 
-  @Column()
+  @Column({ nullable: true })
   aut_observacion: string;
 
 }

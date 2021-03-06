@@ -6,7 +6,7 @@ export class Usuarios {
   @PrimaryGeneratedColumn()
   usr_id: number;
 
-  @Column()
+  @Column({ unique: true })
   usr_rut: string;
 
   @Column()
@@ -21,25 +21,25 @@ export class Usuarios {
   @Column()
   usr_direccion: string;
 
-  @Column()
+  @Column({ unique: true, nullable: true })
   usr_correo: string;
 
-  @Column()
+  @Column({ nullable: true })
   usr_telefono: number;
 
   @Column()
   usr_estado: string;
 
-  @Column()
+  @Column({ unique: true, nullable: true })
   usr_foto: string;
 
-  @Column()
+  @Column({ unique: true, nullable: true })
   usr_cdi_frente: string;
 
-  @Column()
+  @Column({ unique: true, nullable: true })
   usr_cdi_reverso: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   lic_id: number;
 
   @ManyToOne( type => Licencias, { onDelete: 'CASCADE' } )

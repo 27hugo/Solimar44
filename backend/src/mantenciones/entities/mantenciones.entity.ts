@@ -16,7 +16,7 @@ export class Mantenciones {
   @Column()
   man_lugar: string;
 
-  @Column()
+  @Column({ nullable: true })
   man_vencimiento: Date;
 
   @Column()

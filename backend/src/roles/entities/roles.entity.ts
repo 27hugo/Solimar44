@@ -6,7 +6,7 @@ export class Roles {
   @PrimaryGeneratedColumn()
   rol_id: number;
 
-  @Column()
+  @Column({ unique: true })
   rol_nombre: string;
 
 }
