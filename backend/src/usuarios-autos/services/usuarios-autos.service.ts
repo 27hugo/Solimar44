@@ -18,10 +18,10 @@ export class UsuariosAutosService {
     return this.usuariosAutosRepo.findOne(uas_id);
   }
 
-  findByUsrId(usr_id: number) {
+  findByUsrRut(usr_rut: string) {
     return this.usuariosAutosRepo.find({ 
       where: { 
-        usr_id: usr_id 
+        usr_rut: usr_rut 
       },
       relations: ['autos'],
     });

@@ -23,7 +23,11 @@ export class AutosController {
       }
     
       @Post()
-      create(@Body() body: any) {
+      async create(@Body() body: any) {
+        const auto = await this.autosService.findByPatente(body.aut_patente);
+        if(auto){
+          return {status: '500', message: 'La patente ya se encuentra registrada en otro auto.'};
+        }
         return this.autosService.create(body);
       }
     

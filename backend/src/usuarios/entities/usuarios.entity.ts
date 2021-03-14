@@ -1,12 +1,10 @@
 import { Licencias } from 'src/licencias/entities/licencias.entity';
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Usuarios {
-  @PrimaryGeneratedColumn()
-  usr_id: number;
-
-  @Column({ unique: true })
+  
+  @PrimaryColumn({ unique: true })
   usr_rut: string;
 
   @Column()

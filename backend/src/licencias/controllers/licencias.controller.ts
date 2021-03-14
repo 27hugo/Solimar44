@@ -1,4 +1,7 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { existsSync, mkdirSync } from 'fs';
+import { diskStorage } from 'multer';
 import { TiposLicenciasService } from 'src/tipos-licencias/services/tipos-licencias.service';
 //import { UseGuards } from '@nestjs/common';
 //import { AuthGuard } from 'src/shared/auth.guard';
@@ -30,6 +33,32 @@ export class LicenciasController {
       @Post()
       create(@Body() body: any) {
         return this.licenciasService.create(body);
+      }
+
+      @Post('subirFotos')
+      @UseInterceptors(FileFieldsInterceptor([
+        { name: 'lic_frente', maxCount: 1 },
+        { name: 'lic_reverso', maxCount: 1}
+      ],{
+        storage: diskStorage({
+          destination: (req: any, file: any, cb: any) => {
+            const uploadPath = './uploads/usuarios/licencias/' + req.body.usr_rut;
+            // Create folder if doesn't exist
+            if (!existsSync(uploadPath)) {
+                mkdirSync(uploadPath);
+            }
+            cb(null, uploadPath);
+          },
+          filename: (req, file, cb) => {
+            cb(null, file.originalname)
+          },
+        })
+      }))
+      subirFotos(@UploadedFiles() fotos ) {
+        return {
+          lic_frente : fotos.lic_frente[0].filename,
+          lic_reverso : fotos.lic_reverso[0].filename
+        };
       }
     
       @Put(':lic_id')

@@ -22,9 +22,9 @@ export class UsuariosAutosController {
     return this.usuariosAutosService.findOne(uas_id);
   }
 
-  @Get('usuario/:usr_id')
-  findByUsrId(@Param('usr_id') usr_id: number){
-    return this.usuariosAutosService.findByUsrId(usr_id);
+  @Get('usuario/:usr_rut')
+  findByUsrRut(@Param('usr_rut') usr_rut: string){
+    return this.usuariosAutosService.findByUsrRut(usr_rut);
   }
 
   @Post()

@@ -16,6 +16,10 @@ export class AutosService {
       findOne(aut_id: number) {
         return this.autosRepo.findOne(aut_id);
       }
+
+      findByPatente(aut_patente: string){
+        return this.autosRepo.findOne({ where: { aut_patente: aut_patente }});
+      }
     
       create(auto: Autos) {
         return this.autosRepo.save(auto);

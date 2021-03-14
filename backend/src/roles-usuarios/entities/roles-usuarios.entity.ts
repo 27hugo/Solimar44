@@ -9,7 +9,7 @@ export class RolesUsuarios {
   rus_id: number;
 
   @Column()
-  usr_id: number;
+  usr_rut: string;
 
   @Column()
   rol_id: number;
@@ -22,7 +22,7 @@ export class RolesUsuarios {
   roles: Roles
 
   @ManyToOne( type => Usuarios, { onDelete: 'CASCADE' } )
-  @JoinColumn({ name: 'usr_id', referencedColumnName: 'usr_id' })
+  @JoinColumn({ name: 'usr_rut', referencedColumnName: 'usr_rut' })
   usuarios: Usuarios
 
 }
