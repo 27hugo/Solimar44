@@ -1,17 +1,24 @@
-import React from "react";
-import { Menu } from "antd";
-import Sider from "antd/lib/layout/Sider";
+import React, { useState } from "react";
+import { Menu, Layout } from "antd";
+
 import { HomeOutlined, CarOutlined, SearchOutlined, UserAddOutlined, UserOutlined, LogoutOutlined, IdcardOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-
+const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 function SiderComponent() {
+
+  const [collapsed, setCollapsed] = useState(false);
+
+  const onCollapse = collapsed => {
+    setCollapsed(collapsed);
+  };
+
   return (
-    <Sider trigger={null}>
+    <Sider breakpoint="lg" collapsible collapsed={collapsed} onCollapse={onCollapse} >
+
       <Menu
         defaultSelectedKeys={["1"]}
-        defaultOpenKeys={["sub1"]}
         mode="inline"
         theme="dark"
       >
@@ -27,18 +34,18 @@ function SiderComponent() {
           </Menu.Item>
         </SubMenu>
         <SubMenu key="sub2" icon={<CarOutlined />} title="Autos">
-          <Menu.Item key="5" icon={<CarOutlined />}>
+          <Menu.Item key="4" icon={<CarOutlined />}>
             <Link to="/autos/ingresar">Ingresar autos</Link>
           </Menu.Item>
-          <Menu.Item key="6" icon={<SearchOutlined />}>
+          <Menu.Item key="5" icon={<SearchOutlined />}>
             <Link to="/autos/buscar">Buscar autos</Link>
           </Menu.Item>
         </SubMenu>
       
-          <Menu.Item key="11" icon={<IdcardOutlined />} >
-            <Link to="/Catalogo">Mis datos personales</Link>
+          <Menu.Item key="6" icon={<IdcardOutlined />} >
+            <Link to="/misdatos">Mis datos personales</Link>
           </Menu.Item>
-        <Menu.Item key="12" icon={<LogoutOutlined />}>
+        <Menu.Item key="7" icon={<LogoutOutlined />}>
           <Link to="/logout">Cerrar sesión</Link>
         </Menu.Item>
       </Menu>
