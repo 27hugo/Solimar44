@@ -25,6 +25,28 @@ function AgregarLicenciaConductor(props) {
     const onFinish = () => {
         props.setCurrentStep(props.currentStep + 1);
     }
+
+    const checkFechaEmision = (rules, value, callback) => {
+        if(new Date() < new Date(value)){
+            return Promise.reject('La fecha no puede ser posterior al día de hoy.')
+        }
+        else{
+            return Promise.resolve();
+        }
+    }
+
+    const checkFechaVencimiento = (rules, value, callback) => {
+        if(new Date(value) <= new Date()){
+            return Promise.reject('La fecha debe ser posterior al día de hoy.')
+        }
+        else if (new Date(form.getFieldValue('lic_emision')) >= new Date(value)){
+            return Promise.reject('La fecha de vencimiento no puede ser anterior a la de emisión.');
+        }
+        else{
+            return Promise.resolve();
+        }
+    }
+
     return (
         <Form
             form={form}
@@ -53,7 +75,7 @@ function AgregarLicenciaConductor(props) {
                 <Col style={{padding: 5}} xs={24} lg={4}>
                     <Form.Item
                     name="lic_emision"
-                    rules={[{ required: true, message: 'Debe ingresar la fecha de emisión de la licencia.' }]} 
+                    rules={[{ required: true, message: 'Debe ingresar la fecha de emisión de la licencia.' }, {validator: checkFechaEmision}]} 
                     label="Fecha de emisión"
                     >
                     <DatePicker style={{width: '100%'}} />
@@ -62,7 +84,7 @@ function AgregarLicenciaConductor(props) {
                 <Col style={{padding: 5}} xs={24} lg={4}>
                     <Form.Item
                     name="lic_vencimiento"
-                    rules={[{ required: true, message: 'Debe ingresar la fecha de vencimiento de la licencia.' }]} 
+                    rules={[{ required: true, message: 'Debe ingresar la fecha de vencimiento de la licencia.' }, {validator: checkFechaVencimiento}]} 
                     label="Fecha de vencimiento"
                     >
                     <DatePicker style={{width: '100%'}} />
