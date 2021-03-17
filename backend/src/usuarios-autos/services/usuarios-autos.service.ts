@@ -27,6 +27,10 @@ export class UsuariosAutosService {
     });
   }
 
+  findByAutIdUsrRut(aut_id, usr_rut){
+    return this.usuariosAutosRepo.find({ where: { aut_id: aut_id, usr_rut: usr_rut } });
+  }
+
   create(uas: UsuariosAutos) {
     return this.usuariosAutosRepo.save(uas);
   }

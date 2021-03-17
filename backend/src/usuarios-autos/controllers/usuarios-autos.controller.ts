@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
 //import { UseGuards } from '@nestjs/common';
 //import { AuthGuard } from 'src/shared/auth.guard';
 
@@ -28,8 +28,12 @@ export class UsuariosAutosController {
   }
 
   @Post()
-  create(@Body() body: any) {
-    return this.usuariosAutosService.create(body);
+  async create(@Body() body: any) {
+    const uas = await this.usuariosAutosService.findByAutIdUsrRut(body.aut_id, body.usr_rut);
+    if(uas.length > 0){
+      throw new HttpException('El auto ya se encuentra asignado al usuario.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return await this.usuariosAutosService.create(body);
   }
 
   @Put(':uas_id')
