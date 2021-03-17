@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Descriptions, Image, notification, Row, Skeleton, Switch } from 'antd';
+import { Button, Card, Col, Descriptions, Image, notification, Row, Skeleton, Switch } from 'antd';
 import { useParams } from 'react-router';
 import AutosAsignados from './AutosAsignados';
 import ConductoresService from '../../services/ConductoresService';
 import LicenciaConductor from './LicenciaConductor';
+import { PlusOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 const conductoresService = new ConductoresService();
 
@@ -34,20 +36,22 @@ function VerConductor() {
         checked ? setUsrCDI(usuario.usr_cdi_frente) : setUsrCDI(usuario.usr_cdi_reverso)
     }
 
-    useEffect(async () => {
-        const response = await conductoresService.consultarConductor(usr_rut);
-        if(response.status === 'ERROR' || response.status === 'FATAL'){
-            notification[response.type]({ message: response.title, description: response.message });
-            return;
-        }
-        const usuario = new Usuarios(response.data.usr_rut, response.data.usr_nombre, response.data.usr_apellido, response.data.usr_correo, response.data.usr_telefono, response.data.usr_direccion, response.data.usr_fnacimiento, response.data.usr_foto, response.data.usr_cdi_frente, response.data.usr_cdi_reverso, response.data.lic_id);
-        usuario.usr_foto = uploads + '/' + usuario.usr_foto;
-        usuario.usr_cdi_frente = uploads + '/' + usuario.usr_cdi_frente;
-        usuario.usr_cdi_reverso = uploads + '/' + usuario.usr_cdi_reverso;
-        usuario.usr_fnacimiento = new Date(usuario.usr_fnacimiento);
-        setUsuario(usuario);
-        setUsrCDI(usuario.usr_cdi_frente);
-        setLoading(false);
+    useEffect(() => {
+        conductoresService.consultarConductor(usr_rut).then(response => {
+            if(response.status === 'ERROR' || response.status === 'FATAL'){
+                notification[response.type]({ message: response.title, description: response.message });
+                return;
+            }
+            const usuario = new Usuarios(response.data.usr_rut, response.data.usr_nombre, response.data.usr_apellido, response.data.usr_correo, response.data.usr_telefono, response.data.usr_direccion, response.data.usr_fnacimiento, response.data.usr_foto, response.data.usr_cdi_frente, response.data.usr_cdi_reverso, response.data.lic_id);
+            usuario.usr_foto = uploads + '/' + usuario.usr_foto;
+            usuario.usr_cdi_frente = uploads + '/' + usuario.usr_cdi_frente;
+            usuario.usr_cdi_reverso = uploads + '/' + usuario.usr_cdi_reverso;
+            usuario.usr_fnacimiento = new Date(usuario.usr_fnacimiento);
+            setUsuario(usuario);
+            setUsrCDI(usuario.usr_cdi_frente);
+            setLoading(false);
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const calcularEdad = (fecha) => {
@@ -69,7 +73,7 @@ function VerConductor() {
         <Col lg={24} >
             <Card> 
                 <Row>
-                    <Col style={{padding: 10}} xs={24} sm={24} md={24} lg={14}>
+                    <Col style={{padding: 10}} xs={24} sm={24} md={24} lg={24} xl={24} xxl={14}>
                         <h3 style={{marginBottom: 20}}><b>Datos del usuario</b></h3>
                         <Skeleton loading={loading} title={false}  round={true} paragraph={{ rows: 4 , width: ['90%','90%','90%','90%']}} active>
                             {!loading &&
@@ -86,7 +90,7 @@ function VerConductor() {
                         </Skeleton>
                         
                     </Col>
-                    <Col style={{padding: 10}} xs={24} sm={24} md={24} lg={10}>
+                    <Col style={{padding: 10}} xs={24} sm={24} md={24} lg={24} xl={24} xxl={10}>
                         <Descriptions title="Fotos del usuario" style={{marginBottom: 25}} layout="vertical" bordered>
                             <Descriptions.Item style={{textAlign: 'center'}} span={2} label="Foto">
                                 <Skeleton loading={loading} avatar={{ size: 200, shape: 'square' }} paragraph={false} title={false} active>
@@ -132,6 +136,11 @@ function VerConductor() {
                 <Row>
                     <Col style={{padding: 10}} lg={24}>
                         <h3 style={{marginBottom: 15}}><b>Autos asignados</b></h3>
+                        <Link to="/asignar-auto">
+                            <Button style={{marginBottom: 25}} type="primary">
+                                Asignar auto <PlusOutlined />
+                            </Button>
+                        </Link>
                         <AutosAsignados usr_rut={usr_rut}/>
                     </Col>   
                 </Row>

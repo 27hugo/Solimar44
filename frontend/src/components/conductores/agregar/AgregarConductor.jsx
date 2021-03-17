@@ -1,5 +1,5 @@
 import React, { useState    } from 'react';
-import { Col, Row, Button, Steps, Form, Result } from 'antd';
+import { Col, Row, Steps } from 'antd';
 import AgregarConductorForm from './AgregarConductorForm';
 import AgregarLicenciaConductor from './AgregarLicenciaConductor';
 import SeleccionarFotos from './SeleccionarFotos';

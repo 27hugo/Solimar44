@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { notification, Table } from 'antd';
+import { Table } from 'antd';
 import AutosService from '../../services/AutosService';
 
 const autosService = new AutosService();
@@ -20,9 +20,10 @@ function AutosAsignados(props) {
     const [dataSource, setDataSource] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(async() => {
+    
+    useEffect(() => {
         let aut = [];
-        const response = await autosService.consultarAutosUsuario(props.usr_rut);
+        autosService.consultarAutosUsuario(props.usr_rut).then(response => {
         if(response.status === 'ERROR' || response.status === 'FATAL'){
             return;
         }
@@ -33,8 +34,10 @@ function AutosAsignados(props) {
         setDataSource(aut);
         setLoading(false);
 
-    }, []);
-
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
+    
     const columns = [
         {
             title: 'Marca',

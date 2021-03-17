@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col, Row, Input, Form, DatePicker, Button } from 'antd';
-const { validate, clean, format, getCheckDigit } = require('rut.js');
+const { validate, format } = require('rut.js');
 
 function AgregarConductorForm(props) {
     const usuario = props.usuario;

@@ -1,5 +1,3 @@
-import { notification } from 'antd';
-
 export default class Reply{
 
     setOk(title, message, data){

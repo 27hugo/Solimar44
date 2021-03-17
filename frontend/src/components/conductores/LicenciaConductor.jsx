@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Descriptions, Image, notification, Select, Skeleton, Switch, Table } from 'antd';
+import { Descriptions, Image, Select, Skeleton, Switch } from 'antd';
 import LicenciasService from '../../services/LicenciasService';
 
 const licenciasService = new LicenciasService();
@@ -26,19 +26,20 @@ function LicenciaConductor(props) {
     children.push(<Option key={3}>B1</Option>);
     children.push(<Option key={4}>B2</Option>);
     
-    useEffect(async() => {
-        const responseLicencia = await licenciasService.consultarLicencia(props.lic_id);
-        if(responseLicencia.status === 'ERROR' || responseLicencia.status === 'FATAL'){
-            return;
-        }
-        responseLicencia.data.lic_tipos = JSON.parse(responseLicencia.data.lic_tipos[0].lic_nombre);
-        responseLicencia.data.lic_frente = uploads + '/' + responseLicencia.data.lic_frente;
-        responseLicencia.data.lic_reverso = uploads + '/' + responseLicencia.data.lic_reverso;
+    useEffect(() => {
+        licenciasService.consultarLicencia(props.lic_id).then(responseLicencia => {
+            if(responseLicencia.status === 'ERROR' || responseLicencia.status === 'FATAL'){
+                return;
+            }
+            responseLicencia.data.lic_tipos = JSON.parse(responseLicencia.data.lic_tipos[0].lic_nombre);
+            responseLicencia.data.lic_frente = uploads + '/' + responseLicencia.data.lic_frente;
+            responseLicencia.data.lic_reverso = uploads + '/' + responseLicencia.data.lic_reverso;
 
-        setLicencia(responseLicencia.data);
-        setUsrLic(responseLicencia.data.lic_frente);
-        setLoading(false);
-
+            setLicencia(responseLicencia.data);
+            setUsrLic(responseLicencia.data.lic_frente);
+            setLoading(false);
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 

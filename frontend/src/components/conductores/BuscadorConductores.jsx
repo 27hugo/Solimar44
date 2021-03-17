@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Col, notification, Row } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 import { Table, Input, InputNumber, Popconfirm, Form, Typography, Button, Space } from 'antd';
 import { Link } from 'react-router-dom';
 import ConductoresService from '../../services/ConductoresService';
@@ -189,7 +188,6 @@ function BuscadorConductores(props) {
                 key: 'usr_nombre',
                 width: '15%',
                 editable: true,
-                render: (text, record) => <Link to={'/conductores/buscar/' + record.usr_rut}>{text}</Link>,
                 sorter: (a, b) => a.usr_nombre.localeCompare(b.usr_nombre),
             },
             {
@@ -198,7 +196,6 @@ function BuscadorConductores(props) {
                 key: 'usr_apellido',
                 width: '15%',
                 editable: true,
-                render: (text, record) => <Link to={'/conductores/buscar/' + record.usr_rut}>{text}</Link>,
                 sorter: (a, b) => a.usr_apellido.localeCompare(b.usr_apellido),
             },
             {

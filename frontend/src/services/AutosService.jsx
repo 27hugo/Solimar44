@@ -1,15 +1,5 @@
 import config from "../config"
-import { notification } from 'antd';
 import Reply from "../utils/Reply";
-
-const openNotification = (title, message, type) => {
-    notification[type]({
-      message: title,
-      description: message,
-      
-    });
-};
-
 const reply = new Reply();
 
 export default class AutosService{
@@ -19,24 +9,33 @@ export default class AutosService{
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){
-                openNotification('Auto agregado','Los cambios han sido guardados con éxito.','success');
-                return true;
+                reply.setOk('Auto agregado','El auto ha sido asignado con éxito.',res);
             }else{
-                openNotification('Ocurrió un error',res.message,'warning');
-                return false;
+                reply.setError(res.message);
             }   
+            return reply.getResponse();
         })
         .catch(() => {
-            openNotification('Ocurrió un error','No se puede establecer conexión con el servidor.','error');
-        })
+            reply.setFatal();
+            return reply.getResponse();
+        }) 
     }
 
     obtenerAutos(){
         return fetch( config.backendUrl + '/api/autos', {method: 'GET', headers: { 'Content-Type': 'application/json' } })
-        .then( async response => {return await response.json()})
-        .catch(() => {
-            openNotification('Ocurrió un error','No se puede establecer conexión con el servidor.','error');
+        .then( async (response) => {
+            const res = await response.json();
+            if(response.ok && res.status !== "500"){
+                reply.setOk('','',res);
+            }else{
+                reply.setError(res.message);
+            }   
+            return reply.getResponse();
         })
+        .catch(() => {
+            reply.setFatal();
+            return reply.getResponse();
+        }) 
     }
 
     consultarAutosUsuario(usr_rut){
@@ -45,6 +44,23 @@ export default class AutosService{
             const res = await response.json();
             if(response.ok && res.status !== "500"){
                 reply.setOk('','',res);
+            }else{
+                reply.setError(res.message);
+            }   
+            return reply.getResponse();
+        })
+        .catch(() => {
+            reply.setFatal();
+            return reply.getResponse();
+        }) 
+    }
+
+    asignarAutoUsuario(uas){
+        return fetch( config.backendUrl + '/api/usuarios-autos', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(uas) })
+        .then( async (response) => {
+            const res = await response.json();
+            if(response.ok && res.status !== "500"){
+                reply.setOk('El auto ha sido asignado con éxito.','',res);
             }else{
                 reply.setError(res.message);
             }   

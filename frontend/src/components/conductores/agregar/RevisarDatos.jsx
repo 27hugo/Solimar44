@@ -186,14 +186,14 @@ function RevisarDatos(props) {
                 }
             </Descriptions>
             <Descriptions size="small" style={{marginTop: 25}} layout="horizontal" bordered>         
-                <Descriptions.Item span={4} label="Foto conductor:"><img width={100} src={fotos.usr_foto.fileList[0].thumbUrl}/></Descriptions.Item>
-                <Descriptions.Item span={2} label="Cédula identidad frente:"><img width={100} src={fotos.usr_cdi_frente.fileList[0].thumbUrl}/></Descriptions.Item>
-                <Descriptions.Item span={2} label="Cédula identidad reverso:"><img width={100} src={fotos.usr_cdi_reverso.fileList[0].thumbUrl}/></Descriptions.Item>
+                <Descriptions.Item span={4} label="Foto conductor:"><img alt="foto_usuario" width={100} src={fotos.usr_foto.fileList[0].thumbUrl}/></Descriptions.Item>
+                <Descriptions.Item span={2} label="Cédula identidad frente:"><img alt="foto_cedula_frente" width={100} src={fotos.usr_cdi_frente.fileList[0].thumbUrl}/></Descriptions.Item>
+                <Descriptions.Item span={2} label="Cédula identidad reverso:"><img alt="foto_cedula_reverso" width={100} src={fotos.usr_cdi_reverso.fileList[0].thumbUrl}/></Descriptions.Item>
                 {fotos.lic_frente &&
-                    <Descriptions.Item span={2} label="Licencia conducir frente:"><img width={100} src={fotos.lic_frente.fileList[0].thumbUrl}/></Descriptions.Item>
+                    <Descriptions.Item span={2} label="Licencia conducir frente:"><img alt="foto_licencia_frente" width={100} src={fotos.lic_frente.fileList[0].thumbUrl}/></Descriptions.Item>
                 }
                 {fotos.lic_reverso &&
-                <Descriptions.Item span={2} label="Licencia conducir reverso:"><img width={100} src={fotos.lic_reverso.fileList[0].thumbUrl}/></Descriptions.Item>
+                <Descriptions.Item span={2} label="Licencia conducir reverso:"><img alt="foto_licencia_reverso" width={100} src={fotos.lic_reverso.fileList[0].thumbUrl}/></Descriptions.Item>
                 }
             </Descriptions>
             <Row style={{marginTop: 25}}>

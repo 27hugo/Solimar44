@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Col, Row, DatePicker } from 'antd';
+import { Form, Input, Button, Col, Row, DatePicker, notification } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import AutosService from '../../services/AutosService';
 import AutosModel from '../../models/AutosModel';
@@ -9,76 +9,99 @@ const autosService = new AutosService();
 
 
 function AgregarAutoForm() {
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+    const [form] = Form.useForm();
+    const [length, setLength] = useState(0);
+    const maxLength = 100;
+    const [loading, setLoading] = useState(false);
     const onFinish = async (e) => {
         setLoading(true);
-        const auto = new AutosModel(e.aut_id, e.aut_patente, e.aut_marca, e.aut_anio.year(), e.aut_observacion);
-        if(await autosService.agregarAuto(auto)){
-            form.resetFields();
+        const auto = new AutosModel(e.aut_id, e.aut_patente.toUpperCase(), e.aut_marca, e.aut_anio.year(), e.aut_observacion);
+        const response = await autosService.agregarAuto(auto);
+        if(response.status === 'ERROR' || response.status === 'FATAL'){
+            notification[response.type]({ message: response.title, description: response.message });
+            setLoading(false);
+            return;
         }
+        notification[response.type]({ message: response.title, description: response.message });
+        form.resetFields();
+        
         setLoading(false);
     };
+
+    const checkAnioAuto = (rules, value, callback) => {
+        if (new Date() < new Date(value)) {
+            return Promise.reject('La fecha no puede ser posterior al día de hoy.')
+        }
+        else {
+            return Promise.resolve();
+        }
+    }
+    const onChangeTextArea = e => {
+        setLength(e.target.value.length);
+    }
+
     return (
-        <Row style={{padding: 30}} justify="left" align="top">
-            <Col span={24}><h1 style={{fontSize: 25}}>Ingresar auto</h1></Col>
+        <Row style={{ padding: 30 }} justify="left" align="top">
+            <Col span={24}><h1 style={{ fontSize: 25 }}>Ingresar auto</h1></Col>
             <Col lg={10}>
                 <Form
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
                     initialValues={{
-                    remember: true,
+                        remember: true,
                     }}
                 >
                     <Row>
-                        <Col style={{padding: 5}} span={10}>
+                        <Col style={{ padding: 5 }} span={10}>
                             <Form.Item
-                            name="aut_marca"
-                            rules={[{ required: true, message: 'Debe ingresar la marca del vehículo.' }]} 
-                            label="Marca"
+                                name="aut_marca"
+                                rules={[{ required: true, message: 'Debe ingresar la marca del vehículo.' }]}
+                                label="Marca"
                             >
-                            <Input />
+                                <Input maxLength={15} />
                             </Form.Item>
                         </Col>
-                        <Col style={{padding: 5}} span={7}>
+                        <Col style={{ padding: 5 }} span={7}>
                             <Form.Item
-                            name="aut_patente"
-                            rules={[{ required: true, message: 'Debe ingresar la patente del vehículo.' }]} 
-                            label="Patente"
+                                name="aut_patente"
+                                rules={[{ required: true, message: 'Debe ingresar la patente del vehículo.' }]}
+                                label="Patente"
                             >
-                            <Input />
+                                <Input maxLength={6}/>
                             </Form.Item>
                         </Col>
-                        <Col style={{padding: 5}} span={7}>
+                        <Col style={{ padding: 5 }} span={7}>
                             <Form.Item
-                            name="aut_anio"
-                            rules={[{ required: true, message: 'Indique el año del vehículo.' }]} 
-                            label="Año"
+                                name="aut_anio"
+                                rules={[{ required: true, message: 'Indique el año del vehículo.' }, { validator: checkAnioAuto }]}
+                                label="Año"
                             >
-                            <DatePicker style={{minWidth: '100%'}} picker="year" />
+                                <DatePicker style={{ minWidth: '100%' }} picker="year" />
                             </Form.Item>
                         </Col>
-                        <Col style={{padding: 5}} span={24}>
+                        <Col style={{ padding: 5 }} span={24}>
                             <Form.Item
-                            name="aut_observacion"
-                            label="Observaciones opcionales"
+                            style={{marginBottom: 5}}
+                                name="aut_observacion"
+                                label="Observaciones opcionales"
                             >
-                                <TextArea rows={4}/>
+                                <TextArea onChange={onChangeTextArea} maxLength={maxLength} rows={4} />
                             </Form.Item>
+                            {length}/{maxLength} Caracteres
                         </Col>
-                        <Col style={{padding: 5}} span={24}>
+                        <Col style={{ padding: 5 }} span={24}>
                             <Form.Item>
-                            <Button disabled={loading} loading={loading} type="primary" htmlType="submit" >
-                                Ingresar auto
+                                <Button disabled={loading} loading={loading} type="primary" htmlType="submit" >
+                                    Ingresar auto
                             </Button>
                             </Form.Item>
                         </Col>
                     </Row>
-                </Form> 
+                </Form>
             </Col>
         </Row>
-  );
+    );
 }
 
 export default AgregarAutoForm;

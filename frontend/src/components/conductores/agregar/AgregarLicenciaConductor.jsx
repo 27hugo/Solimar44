@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row, Input, Form, DatePicker, Button, Select } from 'antd';
+import { Col, Row, Form, DatePicker, Button, Select } from 'antd';
 
 function AgregarLicenciaConductor(props) {
     const licencia = props.licencia;

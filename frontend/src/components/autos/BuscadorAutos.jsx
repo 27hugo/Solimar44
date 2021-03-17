@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Row } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Col, notification, Row } from 'antd';
 import { Table, Input, InputNumber, Popconfirm, Form, Typography, Button, Space } from 'antd';
 import { Link } from 'react-router-dom';
 import AutosService from '../../services/AutosService';
@@ -26,6 +25,7 @@ function BuscadorAutos(props) {
     const [dataSourceOld, setDataSourceOld] = useState([]);
     const [nameSearch, setNameSearch] = useState('');
     const [searchDisabled, setSearchDisabled] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const onSearch = () =>{
         //setDataSource( dataSource.filter((person) => person.usr_nombre.includes(nameSearch)) )           
@@ -53,21 +53,26 @@ function BuscadorAutos(props) {
         setDataSourceOld(dso.filter((item) => item.key !== key) );
     };
 
-    useEffect( async () => {
-        let autos = [];
-        let response = await autosService.obtenerAutos();
-        if(response){
-            response.map((a, index) => {
-                autos.push(new dataSourceItem(index, a.aut_id, a.aut_patente, a.aut_anio, a.aut_marca, a.aut_observacion));
-            })
-        }
-        
-        setDataSource(autos);
-        setDataSourceOld(autos);
-        
+    useEffect(() => {
+      let autos = [];
+        autosService.obtenerAutos().then(response => {
+          if(response.status === 'ERROR' || response.status === 'FATAL'){
+            notification[response.type]({ message: response.title, description: response.message });
+            setLoading(false);
+            return;
+          }
+          response.data.map((a, index) => {
+              autos.push(new dataSourceItem(index, a.aut_id, a.aut_patente, a.aut_anio, a.aut_marca, a.aut_observacion));
+          })
+      
+          
+          setDataSource(autos);
+          setDataSourceOld(autos);
+          setLoading(false);
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
-
-
+        
   
 
       
@@ -199,10 +204,10 @@ function BuscadorAutos(props) {
               return editable ? (
                 <span>
                   <Popconfirm title="Guardar cambios?" cancelText="Cancelar" onCancel={cancel} onConfirm={() => save(record.key)}>
-                    <a style={{marginRight: 8}}>Guardar</a>
+                    <a href="#/" style={{marginRight: 8}}>Guardar</a>
                   </Popconfirm>
                   <Popconfirm title="Deshacer cambios?" cancelText="Cancelar" onConfirm={cancel}>
-                    <a>Cancelar</a>
+                    <a href="#/">Cancelar</a>
                   </Popconfirm>
                 </span>
               ) : (
@@ -211,7 +216,7 @@ function BuscadorAutos(props) {
                     Editar
                     </Typography.Link>
                     <Popconfirm title="¿Desea eliminar auto?" onConfirm={() => handleDelete(record.key)}>
-                        <a disabled={editingKey !== ''}>Eliminar</a>
+                        <a href="#/" disabled={editingKey !== ''}>Eliminar</a>
                     </Popconfirm>
                 </Space>
               );
@@ -237,7 +242,7 @@ function BuscadorAutos(props) {
         return (
           <Form form={form} component={false}>
             <Table
-              
+              loading={loading}
               components={{
                 body: {
                   cell: EditableCell,

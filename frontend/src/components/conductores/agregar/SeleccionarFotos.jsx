@@ -1,14 +1,14 @@
-import React, { useEffect, useState    } from 'react';
-import { Col, Row, Input, Form, Button, DatePicker, Upload, Card } from 'antd';
+import React, { useEffect    } from 'react';
+import { Col, Row, Form, Button, Upload, Card } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 function SeleccionarFotos(props) {
-    const fotos = props.fotos;
     const [form] = Form.useForm();
     
     //form.setFieldsValue(fotos);
     useEffect(() => {
         props.setFotos(form.getFieldsValue());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
     const onChange = e => {

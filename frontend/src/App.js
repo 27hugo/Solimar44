@@ -11,7 +11,8 @@ import BuscadorConductores from './components/conductores/BuscadorConductores';
 import BuscadorAutos from './components/autos/BuscadorAutos';
 import MyAccount from './components/myaccount/MyAccount';
 import VerConductor from './components/conductores/VerConductor';
-const { Header, Footer, Sider, Content } = Layout;
+import AsignarConductor from './components/autos/AsignarConductor';
+const { Header, Footer, Content } = Layout;
 function App() {  
 
    return ( 
@@ -32,7 +33,7 @@ function App() {
                     <Route path="/autos/ingresar" exact component={AgregarAutoForm} />
                     <Route path="/autos/buscar" exact component={BuscadorAutos} />
                     <Route path="/misdatos" exact component={MyAccount} />
-
+                    <Route path="/asignar-auto" exact component={AsignarConductor} />
                 </Switch>
            
                         </Content>

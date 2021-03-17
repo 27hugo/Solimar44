@@ -40,12 +40,15 @@ function SiderComponent() {
           <Menu.Item key="5" icon={<SearchOutlined />}>
             <Link to="/autos/buscar">Buscar autos</Link>
           </Menu.Item>
+          <Menu.Item key="6" icon={<UserOutlined />}>
+            <Link to="/asignar-auto">Asignar conductor</Link>
+          </Menu.Item>
         </SubMenu>
       
-          <Menu.Item key="6" icon={<IdcardOutlined />} >
+          <Menu.Item key="7" icon={<IdcardOutlined />} >
             <Link to="/misdatos">Mis datos personales</Link>
           </Menu.Item>
-        <Menu.Item key="7" icon={<LogoutOutlined />}>
+        <Menu.Item key="8" icon={<LogoutOutlined />}>
           <Link to="/logout">Cerrar sesión</Link>
         </Menu.Item>
       </Menu>
