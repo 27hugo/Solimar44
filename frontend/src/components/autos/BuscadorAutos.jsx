@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Col, notification, Row } from 'antd';
+import { Card, Col, notification, Row, Tooltip } from 'antd';
 import { Table, Input, InputNumber, Popconfirm, Form, Typography, Button, Space } from 'antd';
 import { Link } from 'react-router-dom';
 import AutosService from '../../services/AutosService';
-
+import AutosModel from '../../models/AutosModel';
+import { EditOutlined, DeleteOutlined, EyeOutlined, CheckOutlined, CloseOutlined} from '@ant-design/icons';
+import SessionService from '../../services/SessionService';
 const autosService = new AutosService();
-
+const sessionService = new SessionService();
 class dataSourceItem{
     constructor(key, aut_id, aut_patente, aut_anio, aut_marca, aut_observacion){
         this.key = key;
@@ -19,6 +21,20 @@ class dataSourceItem{
 
 
 function BuscadorAutos(props) {
+
+
+    
+    const rol = sessionService.getUserData().roles.rol_nombre;
+
+    const hasPermission = (userRol, roles) => {
+        let granted = false;
+        roles.forEach(rol => {
+            if(userRol === rol){
+                granted = true;
+            }
+        });
+        return granted;
+    }
 
 
     const [dataSource, setDataSource] = useState([]);
@@ -46,11 +62,23 @@ function BuscadorAutos(props) {
         setNameSearch(e.target.value);
     }
 
-    const handleDelete = (key) => {
+    const handleDelete = async (key) => {
+        setLoading(true);
         const ds = [...dataSource];
         const dso = [...dataSourceOld];
+        const index = ds.findIndex((item) => key === item.key);
+
+        let response = await autosService.eliminarAuto(ds[index].aut_id);
+        if(response.status === 'ERROR' || response.status === 'FATAL'){
+            notification[response.type]({ message: response.title, description: response.message });
+            setLoading(false);
+            return;
+        }
+        notification[response.type]({ message: response.title, description: response.message });
+
         setDataSource(ds.filter((item) => item.key !== key) );
         setDataSourceOld(dso.filter((item) => item.key !== key) );
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -97,12 +125,7 @@ function BuscadorAutos(props) {
                 style={{
                   margin: 0,
                 }}
-                rules={[
-                  {
-                    required: true,
-                    message: `Please Input ${title}!`,
-                  },
-                ]}
+                rules={[{required: dataIndex === 'aut_observacion' ? false : true,message: `Debe ingresar ${title}!`,}]}
               >
                 {inputNode}
               </Form.Item>
@@ -143,8 +166,27 @@ function BuscadorAutos(props) {
               const itemOld = newDataOld[indexDataOld]
               newData.splice(index, 1, { ...item, ...row });
               newDataOld.splice(indexDataOld, 1, { ...itemOld, ...row});
+
+
+              const auto = new AutosModel();
+              auto.aut_id = newData[index].aut_id;
+              auto.aut_marca = newData[index].aut_marca;
+              auto.aut_patente = newData[index].aut_patente;
+              auto.aut_anio = newData[index].aut_anio;
+              auto.aut_observacion = newData[index].aut_observacion;
+              
+
+              let response = await autosService.actualizarDatosAuto(auto);
+              if(response.status === 'ERROR' || response.status === 'FATAL'){
+                  notification[response.type]({ message: response.title, description: response.message });
+                  setLoading(false);
+                  return;
+              }
+              notification[response.type]({ message: response.title, description: response.message });
+              
               setDataSourceOld(newDataOld); 
               setDataSource(newData);
+              
               setEditingKey('');
             } else {
               newData.push(row);
@@ -166,7 +208,7 @@ function BuscadorAutos(props) {
                 dataIndex: 'aut_marca',
                 key: 'aut_marca',
                 width: '10%',
-                render: (text, record) => <Link to={'/autos/buscar/' + record.aut_id}>{text}</Link>,
+                editable: true,
                 sorter: (a, b) => a.aut_marca.localeCompare(b.aut_marca),
             },
             {
@@ -175,7 +217,6 @@ function BuscadorAutos(props) {
                 key: 'aut_patente',
                 width: '15%',
                 editable: true,
-                render: (text, record) => <Link to={'/autos/buscar/' + record.aut_id}>{text}</Link>,
                 sorter: (a, b) => a.aut_patente.localeCompare(b.aut_patente),
             },
             {
@@ -203,21 +244,33 @@ function BuscadorAutos(props) {
               const editable = isEditing(record);
               return editable ? (
                 <span>
+                  <Tooltip placement="bottom" title="Cancelar">
+                    <Button style={{marginRight: 16, marginLeft: 16}} onClick={cancel}><CloseOutlined/></Button>
+                    </Tooltip>
                   <Popconfirm title="Guardar cambios?" cancelText="Cancelar" onCancel={cancel} onConfirm={() => save(record.key)}>
-                    <a href="#/" style={{marginRight: 8}}>Guardar</a>
+                  <Tooltip placement="bottom" title="Guardar">
+                    <Button ><CheckOutlined/></Button>
+                    </Tooltip>
                   </Popconfirm>
-                  <Popconfirm title="Deshacer cambios?" cancelText="Cancelar" onConfirm={cancel}>
-                    <a href="#/">Cancelar</a>
-                  </Popconfirm>
+
                 </span>
               ) : (
                 <Space size="middle">
-                    <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-                    Editar
+                    <Typography.Link disabled={editingKey !== ''}>
+                      <Link hidden={editingKey !== ''} to={'/autos/buscar/' + record.aut_id}>
+                        <Tooltip placement="bottom" title="Ver"><Button><EyeOutlined/></Button></Tooltip>
+                        </Link>
                     </Typography.Link>
-                    <Popconfirm title="¿Desea eliminar auto?" onConfirm={() => handleDelete(record.key)}>
-                        <a href="#/" disabled={editingKey !== ''}>Eliminar</a>
-                    </Popconfirm>
+                    {hasPermission(rol, ['Administrador']) &&
+                      <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+                      <Tooltip placement="bottom" title="Editar"><Button disabled={editingKey !== ''}><EditOutlined/></Button></Tooltip>
+                      </Typography.Link>
+                    }
+                    {hasPermission(rol, ['Administrador']) &&
+                      <Popconfirm title="¿Desea eliminar auto?" cancelText="Cancelar" onConfirm={() => handleDelete(record.key)}>
+                      <Tooltip placement="bottom" title="Eliminar"><Button disabled={editingKey !== ''}><DeleteOutlined/></Button></Tooltip>
+                      </Popconfirm>
+                    }
                 </Space>
               );
             },
@@ -242,6 +295,7 @@ function BuscadorAutos(props) {
         return (
           <Form form={form} component={false}>
             <Table
+            scroll={{ x: 700 }}
               loading={loading}
               components={{
                 body: {
@@ -265,10 +319,14 @@ function BuscadorAutos(props) {
 
     return (
         <Row style={{padding: 30}} justify="center" align="top">
-            <Col span={24}><h1 style={{fontSize: 25}}>Buscar Autos</h1></Col>
-            <Col span={24} style={{marginBottom: 25}}>
+          <Col span={24}>
+            <Card>
+            <Row >
+            <Col span={24}><h3>Buscar Autos</h3></Col>
+            <Col xs={24} sm={24} md={24} lg={12} xl={10} style={{marginBottom: 25}}>
                 <Input.Search
                 allowClear
+                maxLength={25}
                 onSearch={onSearch}
                 onChange={handleChange}
                 disabled={searchDisabled}
@@ -280,6 +338,9 @@ function BuscadorAutos(props) {
             <Col span={24}>
             <EditableTable/>
             </Col>
+        </Row>
+            </Card>
+          </Col>
         </Row>
   );
 }

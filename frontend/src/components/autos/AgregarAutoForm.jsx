@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Col, Row, DatePicker, notification } from 'antd';
+import { Form, Input, Button, Col, Row, DatePicker, notification, Card } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import AutosService from '../../services/AutosService';
 import AutosModel from '../../models/AutosModel';
@@ -42,8 +42,12 @@ function AgregarAutoForm() {
 
     return (
         <Row style={{ padding: 30 }} justify="left" align="top">
-            <Col span={24}><h1 style={{ fontSize: 25 }}>Ingresar auto</h1></Col>
-            <Col lg={10}>
+            <Col span={24}>
+            <Card>
+
+            <Row>
+            <Col span={24}><h3>Ingresar auto</h3></Col>
+            <Col lg={12}>
                 <Form
                     form={form}
                     layout="vertical"
@@ -53,7 +57,7 @@ function AgregarAutoForm() {
                     }}
                 >
                     <Row>
-                        <Col style={{ padding: 5 }} span={10}>
+                        <Col style={{ padding: 5 }} xs={24} sm={24} md={24} lg={10}>
                             <Form.Item
                                 name="aut_marca"
                                 rules={[{ required: true, message: 'Debe ingresar la marca del vehículo.' }]}
@@ -62,7 +66,7 @@ function AgregarAutoForm() {
                                 <Input maxLength={15} />
                             </Form.Item>
                         </Col>
-                        <Col style={{ padding: 5 }} span={7}>
+                        <Col style={{ padding: 5 }} xs={24} sm={24} md={24} lg={7}>
                             <Form.Item
                                 name="aut_patente"
                                 rules={[{ required: true, message: 'Debe ingresar la patente del vehículo.' }]}
@@ -71,7 +75,7 @@ function AgregarAutoForm() {
                                 <Input maxLength={6}/>
                             </Form.Item>
                         </Col>
-                        <Col style={{ padding: 5 }} span={7}>
+                        <Col style={{ padding: 5 }} xs={24} sm={24} md={24} lg={7}>
                             <Form.Item
                                 name="aut_anio"
                                 rules={[{ required: true, message: 'Indique el año del vehículo.' }, { validator: checkAnioAuto }]}
@@ -99,6 +103,9 @@ function AgregarAutoForm() {
                         </Col>
                     </Row>
                 </Form>
+            </Col>
+        </Row>
+        </Card>
             </Col>
         </Row>
     );

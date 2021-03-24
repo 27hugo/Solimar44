@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Col, Row, notification } from 'antd';
+import { Form, Input, Button, Col, Row, notification, Card } from 'antd';
 import AutosService from '../../services/AutosService';
 import { Select } from 'antd';
-import ConductoresService from '../../services/ConductoresService';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
+import UsuariosService from '../../services/UsuariosService';
 
 const { Option } = Select;
 const autosService = new AutosService();
-const conductoresService = new ConductoresService();
+const usuariosServcie = new UsuariosService();
 
 class UsuariosAutos{
     constructor(uas_id, aut_id, usr_rut, uas_isduenio){
@@ -18,11 +18,11 @@ class UsuariosAutos{
     }
 }
 
-function AsignarConductor() {
+function AsignarUsuario() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
 
-    const [conductores, setConductores] = useState([]);
+    const [usuarios, setUsuarios] = useState([]);
     const [autos, setAutos] = useState([]);
     const [isDuenio, setIsDuenio] = useState(false);
 
@@ -46,14 +46,14 @@ function AsignarConductor() {
 
     useEffect(() => {
         let autosArray = [];
-        let conductoresArray = [];
+        let usuariosArray = [];
     
-        conductoresService.obtenerConductores().then(resCond => {
-            resCond.data.forEach((conductor, index) => {
-                conductoresArray.push(<Option key={index} value={conductor.usr_rut}>{conductor.usr_nombre + ' ' +conductor.usr_apellido}</Option>);
+        usuariosServcie.obtenerUsuarios().then(resCond => {
+            resCond.data.forEach((usuario, index) => {
+                usuariosArray.push(<Option key={index} value={usuario.usr_rut}>{usuario.usr_nombre + ' ' +usuario.usr_apellido}</Option>);
             });
                     
-        setConductores(conductoresArray);
+        setUsuarios(usuariosArray);
 
         });
         autosService.obtenerAutos().then(resAut => {
@@ -68,7 +68,10 @@ function AsignarConductor() {
     
     return (
         <Row style={{ padding: 30 }} justify="left" align="top">
-            <Col span={24}><h1 style={{ fontSize: 25 }}>Asignar auto a un conductor</h1></Col>
+            <Col span={24}>
+                <Card>
+                <Row >
+            <Col span={24}><h3>Asignar auto a un usuario</h3></Col>
             <Col lg={20}>
                 <Form
                     form={form}
@@ -79,24 +82,24 @@ function AsignarConductor() {
                     }}
                 >
                     <Row>
-                        <Col style={{ padding: 5 }} span={8}>
+                        <Col style={{ padding: 5 }} xs={24} sm={24} md={24} lg={8}>
                             <Form.Item
                                 name="usr_rut"
-                                rules={[{ required: true, message: 'Debe seleccionar un conductor.' }]}
+                                rules={[{ required: true, message: 'Debe seleccionar un usuario.' }]}
                                 label="Conductor"
                             >
                                 <Select
                                     showSearch
                                     style={{ width: '100%' }}
-                                    placeholder="Selecciona un conductor"
+                                    placeholder="Selecciona un usuario"
                                     optionFilterProp="children"
                                     filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 }
                                 >
-                                    {conductores}
+                                    {usuarios}
                                 </Select>
                             </Form.Item>
                         </Col>
-                        <Col style={{padding: 5}} span={8}>
+                        <Col style={{padding: 5}} xs={24} sm={24} md={24} lg={8}>
                             <Form.Item
                                 name="aut_id"
                                 rules={[{ required: true, message: 'Debe seleccionar un auto.' }]}
@@ -113,7 +116,7 @@ function AsignarConductor() {
                                 </Select>
                             </Form.Item>
                         </Col>
-                        <Col style={{padding: 5}} span={8}>
+                        <Col style={{padding: 5}} xs={24} sm={24} md={24} lg={8}>
                             <Form.Item
                                 name="uas_isduenio"
                                 label="Dueño"
@@ -124,7 +127,7 @@ function AsignarConductor() {
                         <Col style={{ padding: 5 }} span={24}>
                             <Form.Item>
                                 <Button disabled={loading} loading={loading} type="primary" htmlType="submit" >
-                                    Ingresar auto
+                                    Asignar auto
                             </Button>
                             </Form.Item>
                         </Col>
@@ -132,7 +135,10 @@ function AsignarConductor() {
                 </Form>
             </Col>
         </Row>
+                </Card>
+            </Col>
+        </Row>
     );
 }
 
-export default AsignarConductor;
+export default AsignarUsuario;
