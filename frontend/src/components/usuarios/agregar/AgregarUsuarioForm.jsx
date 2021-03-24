@@ -1,12 +1,35 @@
-import React from 'react';
-import { Col, Row, Input, Form, DatePicker, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Col, Row, Input, Form, DatePicker, Button, Select } from 'antd';
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import RolesServices from '../../../services/RolesService';
+const { Option } = Select;
 const { validate, format } = require('rut.js');
+const rolesService = new RolesServices();
 
-function AgregarConductorForm(props) {
+function AgregarUsuarioForm(props) {
     const usuario = props.usuario;
-    
+    const [tipoAcceso, setTipoAcceso] = useState(usuario.rol_id);
+    const [roles, setRoles] = useState([]);
     const [form] = Form.useForm();
     form.setFieldsValue(usuario);
+
+    useEffect(() => {
+        let r = [];
+        rolesService.obtenerRoles().then(response => {
+            response.data.forEach(rol => {
+                r.push(<Option value={rol.rol_id}>{rol.rol_nombre}</Option>);
+            });
+            setRoles(r);
+        });
+    },[]);
+
+    const tipoAccesoChange = (value) => {
+        setTipoAcceso(value);
+        const usr = form.getFieldsValue();
+        usr.rol_id = value;
+        props.setUsuario(usr);
+    }
 
     const onChange = e => {
         const usr = form.getFieldsValue();
@@ -47,6 +70,24 @@ function AgregarConductorForm(props) {
             return Promise.resolve();
         }
         
+    }
+
+    const checkPassword = async (rule, value, callback) => {
+        if (value !== undefined && (value.length < 6 || value.length > 12) ){
+            return Promise.reject('La contraseña debe contener entre 6 y 12 caracteres..');    
+        }else{
+            return Promise.resolve();
+        }
+    }
+
+    const checkPasswordMatch = async (rule, value, callback) => {
+        const contrasena = form.getFieldValue('usr_contrasena');
+        if (value !== undefined && (value.length >= 6 && value.length <= 12)  && value !== contrasena ){
+            return Promise.reject('Las contraseñas no coinciden.');
+                
+        }else{
+            return Promise.resolve();
+        }
     }
 
     return (
@@ -120,6 +161,53 @@ function AgregarConductorForm(props) {
                         <Input maxLength={40}/>
                         </Form.Item>
                     </Col>
+                    <Col style={{padding: 5}} xs={24} lg={8}>
+                        <Form.Item
+                        name="rol_id"
+                        label="Tipo de acceso"
+                        >
+                            <Select defaultValue={tipoAcceso} onChange={tipoAccesoChange}>
+                                <Option value={null}>Conductor</Option>
+                                {roles}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    { tipoAcceso !== null && 
+                    <Col style={{padding: 5}} xs={24} lg={8}>
+                        <Form.Item
+                        name="usr_contrasena"
+                        rules={[{ required: true, message: 'Debe ingresar la contraseña del usuario.' }, {validator: checkPassword}]} 
+                        label="Contraseña"
+                        >
+                            <Input.Password
+                                maxLength={12}
+                                prefix={<LockOutlined className="site-form-item-icon" />}
+                                type="password"
+                                iconRender={(visible) =>
+                                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                                }
+                            />
+                        </Form.Item>
+                    </Col>
+                    }
+                    { tipoAcceso !== null &&
+                    <Col style={{padding: 5}} xs={24} lg={8}>
+                        <Form.Item
+                        name="usr_contrasena_repeat"
+                        rules={[{ required: true, message: 'Debe ingresar nuevamente la contraseña.' }, {validator: checkPasswordMatch}]} 
+                        label="Repetir contraseña"
+                        >
+                            <Input.Password
+                                maxLength={12}
+                                prefix={<LockOutlined className="site-form-item-icon" />}
+                                type="password"
+                                iconRender={(visible) =>
+                                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                                }
+                            />
+                        </Form.Item>
+                    </Col>
+                    }
                 </Row>
                 <Row>
                     <Col>
@@ -130,4 +218,4 @@ function AgregarConductorForm(props) {
   );
 }
 
-export default AgregarConductorForm;
+export default AgregarUsuarioForm;

@@ -34,7 +34,6 @@ function SeleccionarFotos(props) {
             >
                 <Row>
                     <Col xs={24} lg={8} xl={8} xxl={4}>
-                        <Card>
                             <Form.Item
                             name="usr_foto"
                             rules={[{ required: true, message: 'Debe subir una foto del usuario.' }]} 
@@ -50,10 +49,8 @@ function SeleccionarFotos(props) {
                                 <Button  icon={<UploadOutlined />}>Seleccionar imagen</Button>
                             </Upload>
                             </Form.Item>
-                        </Card>
                     </Col>
                     <Col xs={24} lg={8} xl={8} xxl={4}>
-                        <Card>
                             <Form.Item
                             name="usr_cdi_frente"
                             rules={[{ required: true, message: 'Debe seleccionar foto frontal de Cédula de Identidad del usuario.' }]} 
@@ -69,10 +66,8 @@ function SeleccionarFotos(props) {
                                 <Button  icon={<UploadOutlined />}>Seleccionar imagen</Button>
                             </Upload>
                             </Form.Item>
-                        </Card>
                     </Col>
                     <Col xs={24} lg={8} xl={8} xxl={4}>
-                        <Card>
                             <Form.Item
                             name="usr_cdi_reverso"
                             rules={[{ required: true, message: 'Debe seleccionar foto reverso de Cédula de Identidad del usuario.' }]} 
@@ -88,11 +83,9 @@ function SeleccionarFotos(props) {
                                 <Button  icon={<UploadOutlined />}>Seleccionar imagen</Button>
                             </Upload>
                             </Form.Item>
-                        </Card>
                     </Col>
                     {props.licencia.lic_emision && props.licencia.lic_vencimiento && props.licencia.lic_tipo &&
                     <Col xs={24} lg={8} xl={8} xxl={4}>
-                        <Card>
                             <Form.Item
                             name="lic_frente"
                             rules={[{ required: true, message: 'Debe seleccionar foto frontal de la Licencia de conducir.' }]}
@@ -108,12 +101,10 @@ function SeleccionarFotos(props) {
                                 <Button  icon={<UploadOutlined />}>Seleccionar imagen</Button>
                             </Upload>
                             </Form.Item>
-                        </Card>
                     </Col>
                     }
                     {props.licencia.lic_emision && props.licencia.lic_vencimiento && props.licencia.lic_tipo &&
                     <Col xs={24} lg={8} xl={8} xxl={4}>
-                        <Card>
                             <Form.Item
                             name="lic_reverso"
                             rules={[{ required: true, message: 'Debe seleccionar foto trasera de la Licencia de conducir.' }]}
@@ -129,7 +120,6 @@ function SeleccionarFotos(props) {
                                 <Button  icon={<UploadOutlined />}>Seleccionar imagen</Button>
                             </Upload>
                             </Form.Item>
-                        </Card>
                     </Col>
                     }
                 </Row>

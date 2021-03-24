@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Descriptions, Image, Select, Skeleton, Switch } from 'antd';
+import { Descriptions, Image, Select, Skeleton, Spin, Switch } from 'antd';
 import LicenciasService from '../../services/LicenciasService';
-
+import { UserOutlined, FileImageOutlined, CarOutlined, IdcardOutlined} from '@ant-design/icons';
 const licenciasService = new LicenciasService();
 
 
-function LicenciaConductor(props) {
+function LicenciaUsuario(props) {
 
     const [loading, setLoading] = useState(true);
     const [licencia, setLicencia] = useState(null);
@@ -45,10 +45,11 @@ function LicenciaConductor(props) {
 
 
     return (
-        <Skeleton loading={loading} title={false} round={true} paragraph={{ rows: 4 }} active>
-            {!loading &&
-                <Descriptions title="Licencia del usuario" style={{marginBottom: 25}} layout="horizontal" bordered>
+        <Spin spinning={loading}>
+        <h3 style={{marginBottom: 20}}><IdcardOutlined/> Licencia del usuario</h3>
+               <Descriptions style={{marginBottom: 25}} layout="horizontal" bordered>
                     <Descriptions.Item span={2} label="Licencias:">
+                        {!loading &&
                         <Select
                             mode="multiple"
                             style={{ width: '100%' }}
@@ -58,23 +59,24 @@ function LicenciaConductor(props) {
                         >
                         {children}
                         </Select>
+                        }
                     </Descriptions.Item>
                     <Descriptions.Item  span={1} label="Foto licencia">
-                        <Skeleton loading={loading} avatar={{ size: 200, shape: 'square' }} paragraph={false} title={false} active>
                             {!loading &&
-                                <Image
+                             <>
+                             <Image
                                     width="150px"
                                     src={usrLic}
                                 />
-                            }<br/>
+                            <br/>
                         <label>Voltear cédula</label>
                         <Switch style={{marginLeft: 10}} defaultChecked onChange={onSwitch} />
-                        </Skeleton>
+                            </>}
                     </Descriptions.Item>
                 </Descriptions>
-            }
-        </Skeleton>
+            
+        </Spin>
     );
 }
 
-export default LicenciaConductor;
+export default LicenciaUsuario;

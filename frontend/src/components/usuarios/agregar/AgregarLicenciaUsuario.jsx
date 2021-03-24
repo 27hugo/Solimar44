@@ -1,17 +1,17 @@
 import React from 'react';
 import { Col, Row, Form, DatePicker, Button, Select } from 'antd';
+import TiposLicenciasArray from '../../../utils/TiposLicencias';
 
-function AgregarLicenciaConductor(props) {
+function AgregarLicenciaUsuario(props) {
     const licencia = props.licencia;
     
     const { Option } = Select;
 
     const children = [];
-    children.push(<Option key={1}>A1</Option>);
-    children.push(<Option key={2}>A2</Option>);
-    children.push(<Option key={3}>B1</Option>);
-    children.push(<Option key={4}>B2</Option>);
-    
+    TiposLicenciasArray.forEach( (tipo, index) => {
+        children.push(<Option key={index}>{tipo}</Option>);
+    });
+
     const handleChange = (value) => {
         console.log(`selected ${value}`);
       }
@@ -93,9 +93,9 @@ function AgregarLicenciaConductor(props) {
             </Row>
             <Row>
                     <Col>
-                        <Button style={{marginRight: 25}} onClick={() => {props.setCurrentStep(props.currentStep - 1)}}>Volver atrás</Button>
-                        <Button type="primary" htmlType="submit" >Siguiente paso</Button>
-                        <Button type="link" onClick={() => {
+                        <Button style={{marginRight: 25, marginBottom: 15}} onClick={() => {props.setCurrentStep(props.currentStep - 1)}}>Volver atrás</Button>
+                        <Button style={{marginRight: 25, marginBottom: 15}} type="primary" htmlType="submit" >Siguiente paso</Button>
+                        <Button style={{left: -15}} type="link" onClick={() => {
                             props.setLicencia({
                                 lic_tipo: undefined,
                                 lic_emision: undefined,
@@ -110,4 +110,4 @@ function AgregarLicenciaConductor(props) {
   );
 }
 
-export default AgregarLicenciaConductor;
+export default AgregarLicenciaUsuario;

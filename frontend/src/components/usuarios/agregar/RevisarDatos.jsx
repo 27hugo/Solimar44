@@ -1,42 +1,17 @@
 import React, { useState } from 'react';
 import { Row, Button, Card, Descriptions, Select, Popconfirm, notification } from 'antd';
-import ConductoresService from '../../../services/ConductoresService';
+import UsuariosService from '../../../services/UsuariosService';
 import LicenciasService from '../../../services/LicenciasService';
-
-const conductoresService = new ConductoresService();
+import TiposLicenciasArray from '../../../utils/TiposLicencias';
+import Usuarios from '../../../models/UsuariosModel';
+import Licencias from '../../../models/Licencias';
+import TiposLicencias from '../../../models/TiposLicencias';
+const usuariosService = new UsuariosService();
 const licenciasService = new LicenciasService();
 
-class Usuarios{
-    constructor(usr_rut, usr_nombre, usr_apellido, usr_correo, usr_telefono, usr_direccion, usr_fnacimiento, usr_foto, usr_cdi_frente, usr_cdi_reverso, lic_id){
-        this.usr_rut = usr_rut;
-        this.usr_nombre = usr_nombre;
-        this.usr_apellido = usr_apellido;
-        this.usr_correo = usr_correo;
-        this.usr_telefono = usr_telefono;
-        this.usr_direccion = usr_direccion;
-        this.usr_fnacimiento = usr_fnacimiento;
-        this.usr_foto = usr_foto;
-        this.usr_cdi_frente = usr_cdi_frente;
-        this.usr_cdi_reverso = usr_cdi_reverso;
-        this.lic_id = lic_id;
-    }
-}
-class Licencias{
-    constructor(lic_id, lic_emision, lic_vencimiento, lic_frente, lic_reverso){
-        this.lic_id = lic_id;
-        this.lic_emision = lic_emision;
-        this.lic_vencimiento = lic_vencimiento;
-        this.lic_frente = lic_frente;
-        this.lic_reverso = lic_reverso;
-    }
-}
-class TiposLicencias{
-    constructor(tipo_id, lic_id, lic_nombre){
-        this.tipo_id = tipo_id;
-        this.lic_id = lic_id;
-        this.lic_nombre = lic_nombre;
-    }
-}
+
+
+
 
 function RevisarDatos(props) {
     const usuario = props.usuario;
@@ -48,10 +23,9 @@ function RevisarDatos(props) {
     const [disabled, setDisabled] = useState(false);
 
     const children = [];
-    children.push(<Option key={1}>A1</Option>);
-    children.push(<Option key={2}>A2</Option>);
-    children.push(<Option key={3}>B1</Option>);
-    children.push(<Option key={4}>B2</Option>);
+    TiposLicenciasArray.forEach( (tipo, index) => {
+        children.push(<Option key={index}>{tipo}</Option>);
+    });
 
     const calcularEdad = (fecha) => {
         var hoy = new Date();
@@ -75,6 +49,9 @@ function RevisarDatos(props) {
             usr_correo: undefined,
             usr_telefono: undefined,
             usr_direccion: undefined,
+            rol_id: null,
+            usr_contrasena: undefined,
+            usr_contrasena_repeat: undefined,
         });
         props.setLicencia({
             lic_tipo: undefined,
@@ -94,7 +71,7 @@ function RevisarDatos(props) {
     const handleSubmit = async() => {
         setDisabled(true);
         setLoading(true);
-        const usr = new Usuarios(usuario.usr_rut, usuario.usr_nombre, usuario.usr_apellido, usuario.usr_correo, usuario.usr_telefono, usuario.usr_direccion, usuario.usr_fnacimiento, null, null, null, null);
+        const usr = new Usuarios(usuario.usr_rut, usuario.usr_nombre, usuario.usr_apellido, usuario.usr_correo, usuario.usr_telefono, usuario.usr_direccion, usuario.usr_fnacimiento, null, null, null, null, usuario.rol_id, usuario.usr_contrasena);
         const lic = new Licencias(null, licencia.lic_emision, licencia.lic_vencimiento, null, null);
         const tipoLic = new TiposLicencias(null, null, JSON.stringify(licencia.lic_tipo));
 
@@ -114,10 +91,10 @@ function RevisarDatos(props) {
         }
         
         //Se agrega el usuario
-        let responseConductor = await conductoresService.agregarConductor(usr);
-        if(responseConductor.status === 'ERROR' || responseConductor.status === 'FATAL'){
+        let responseUsuario = await usuariosService.agregarUsuario(usr);
+        if(responseUsuario.status === 'ERROR' || responseUsuario.status === 'FATAL'){
             await licenciasService.eliminarLicencia(usr.lic_id);
-            notification[responseConductor.type]({ message: responseConductor.title, description: responseConductor.message });
+            notification[responseUsuario.type]({ message: responseUsuario.title, description: responseUsuario.message });
             setLoading(false);
             setDisabled(false);
             return;
@@ -140,7 +117,7 @@ function RevisarDatos(props) {
         formFotos.append('usr_cdi_reverso', fotos.usr_cdi_reverso.file);
 
         //Se suben las fotos del usuario y de la cedula de identidad
-        let responseFotos = await conductoresService.subirFotos(formFotos);
+        let responseFotos = await usuariosService.subirFotos(formFotos);
         if(responseFotos.status === 'ERROR' || responseFotos.status === 'FATAL'){
             notification[responseFotos.type]({ message: responseFotos.title, description: responseFotos.message });
             setLoading(false);
@@ -148,14 +125,13 @@ function RevisarDatos(props) {
             return;
         }
 
-        notification[responseConductor.type]({ message: responseConductor.title, description: responseConductor.message });
+        notification[responseUsuario.type]({ message: responseUsuario.title, description: responseUsuario.message });
         
         setLoading(false);
     }
 
     return (
         <>
-        <Card>
             <Descriptions layout="horizontal" size="small" bordered>         
                 <Descriptions.Item span={2} label="Nombre:">{usuario.usr_nombre} {usuario.usr_apellido}</Descriptions.Item>
                 <Descriptions.Item span={2} label="Rut:">{usuario.usr_rut}</Descriptions.Item>
@@ -186,7 +162,7 @@ function RevisarDatos(props) {
                 }
             </Descriptions>
             <Descriptions size="small" style={{marginTop: 25}} layout="horizontal" bordered>         
-                <Descriptions.Item span={4} label="Foto conductor:"><img alt="foto_usuario" width={100} src={fotos.usr_foto.fileList[0].thumbUrl}/></Descriptions.Item>
+                <Descriptions.Item span={4} label="Foto usuario:"><img alt="foto_usuario" width={100} src={fotos.usr_foto.fileList[0].thumbUrl}/></Descriptions.Item>
                 <Descriptions.Item span={2} label="Cédula identidad frente:"><img alt="foto_cedula_frente" width={100} src={fotos.usr_cdi_frente.fileList[0].thumbUrl}/></Descriptions.Item>
                 <Descriptions.Item span={2} label="Cédula identidad reverso:"><img alt="foto_cedula_reverso" width={100} src={fotos.usr_cdi_reverso.fileList[0].thumbUrl}/></Descriptions.Item>
                 {fotos.lic_frente &&
@@ -203,7 +179,6 @@ function RevisarDatos(props) {
                 <Button loading={loading} disabled={disabled} type="primary" onClick={handleSubmit}>Guardar cambios</Button>
                 {disabled && <Button style={{marginLeft: 25}} onClick={handleReset}>Volver al comienzo</Button>}
             </Row>
-        </Card>
         </>
   );
 }

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Col, notification, Row } from 'antd';
+import { Card, Col, notification, Row, Tooltip } from 'antd';
 import { Table, Input, InputNumber, Popconfirm, Form, Typography, Button, Space } from 'antd';
 import { Link } from 'react-router-dom';
-import ConductoresService from '../../services/ConductoresService';
-
-const conductoresService = new ConductoresService();
+import UsuariosService from '../../services/UsuariosService';
+import Usuarios from '../../models/UsuariosModel';
+import { EyeOutlined, EditOutlined, DeleteOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import SessionService from '../../services/SessionService';
+const usuariosService = new UsuariosService();
+const sessionService = new SessionService();
 
 class dataSourceItem{
     constructor(key, usr_rut, usr_nombre, usr_apellido, usr_direccion, usr_correo, usr_telefono){
@@ -19,7 +22,22 @@ class dataSourceItem{
 }
 
 
-function BuscadorConductores(props) {
+function BuscadorUsuarios(props) {
+
+
+    
+    const rol = sessionService.getUserData().roles.rol_nombre;
+
+    const hasPermission = (userRol, roles) => {
+        let granted = false;
+        roles.forEach(rol => {
+            if(userRol === rol){
+                granted = true;
+            }
+        });
+        return granted;
+    }
+
 
     const [loading , setLoading] = useState(true);
     const [dataSource, setDataSource] = useState([]);
@@ -53,7 +71,7 @@ function BuscadorConductores(props) {
         const ds = [...dataSource];
         const dso = [...dataSourceOld];
         const usr_rut = dataSource[key].usr_rut;
-        const response = await conductoresService.eliminarConductor(usr_rut);
+        const response = await usuariosService.eliminarUsuario(usr_rut);
         if(response.status === 'ERROR' || response.status === 'FATAL'){
           notification[response.type]({ message: response.title, description: response.message });
           setLoading(false);
@@ -67,14 +85,15 @@ function BuscadorConductores(props) {
 
     useEffect( async () => {
         let usr = [];
-        const response = await conductoresService.obtenerConductores();
+        const response = await usuariosService.obtenerUsuarios();
         if(response.status === 'ERROR' || response.status === 'FATAL'){
           notification[response.type]({ message: response.title, description: response.message });
           setLoading(false);
           return;
         }
-        
+        const usr_rut = sessionService.getUserData().usr_rut;
         response.data.forEach( (usuario, index) => {
+          if(usuario.usr_rut !== usr_rut)
           usr.push(new dataSourceItem(index, usuario.usr_rut, usuario.usr_nombre, usuario.usr_apellido, usuario.usr_direccion, usuario.usr_correo, usuario.usr_telefono));
         });
         
@@ -142,7 +161,8 @@ function BuscadorConductores(props) {
         };
       
         const save = async (key) => {
-          try {
+          try { 
+            setLoading(true);
             const row = await form.validateFields();
             const newData = [...dataSource];
             const newDataOld = [...dataSourceOld];
@@ -154,17 +174,38 @@ function BuscadorConductores(props) {
               const itemOld = newDataOld[indexDataOld]
               newData.splice(index, 1, { ...item, ...row });
               newDataOld.splice(indexDataOld, 1, { ...itemOld, ...row});
-              setDataSourceOld(newDataOld); 
-              setDataSource(newData);
 
               console.log("cambiando");
+              const usuario = new Usuarios();
+              usuario.usr_rut = newData[index].usr_rut;
+              usuario.usr_nombre = newData[index].usr_nombre;
+              usuario.usr_apellido = newData[index].usr_apellido;
+              usuario.usr_correo = newData[index].usr_correo;
+              usuario.usr_telefono = newData[index].usr_telefono;
+              
+              //console.log(usuario);
+              let response = await usuariosService.actualizarDatosUsuario(usuario);
+              if(response.status === 'ERROR' || response.status === 'FATAL'){
+                  notification[response.type]({ message: response.title, description: response.message });
+                  setLoading(false);
+                  return;
+              }
+              notification[response.type]({ message: response.title, description: response.message });
+
+              setDataSourceOld(newDataOld); 
+              setDataSource(newData);
+              setLoading(false);
+    
+
               setEditingKey('');
             } else {
+              console.log('test');
               newData.push(row);
               setDataSource(newData);
               setDataSourceOld(newData);
               setEditingKey('');
             }
+            
 
           } catch (errInfo) {
             console.log('Validate Failed:', errInfo);
@@ -176,8 +217,6 @@ function BuscadorConductores(props) {
                 title: 'Rut',
                 dataIndex: 'usr_rut',
                 key: 'usr_rut',
-                width: '10%',
-                render: (text, record) => <Link to={'/conductores/buscar/' + record.usr_rut}>{text}</Link>,
                 sorter: (a, b) => {
                     return parseInt(a.usr_rut.replace('-','')) - parseInt(b.usr_rut.replace('-',''));
                 },
@@ -186,7 +225,6 @@ function BuscadorConductores(props) {
                 title: 'Nombre',
                 dataIndex: 'usr_nombre',
                 key: 'usr_nombre',
-                width: '15%',
                 editable: true,
                 sorter: (a, b) => a.usr_nombre.localeCompare(b.usr_nombre),
             },
@@ -194,7 +232,6 @@ function BuscadorConductores(props) {
                 title: 'Apellido',
                 dataIndex: 'usr_apellido',
                 key: 'usr_apellido',
-                width: '15%',
                 editable: true,
                 sorter: (a, b) => a.usr_apellido.localeCompare(b.usr_apellido),
             },
@@ -202,14 +239,12 @@ function BuscadorConductores(props) {
                 title: 'Dirección',
                 dataIndex: 'usr_direccion',
                 key: 'usr_direccion',
-                width: '20%',
                 editable: true,
             },
             {
                 title: 'Teléfono',
                 dataIndex: 'usr_telefono',
                 key: 'usr_telefono',
-                width: '20%',
                 editable: true,
             },
             {
@@ -229,21 +264,37 @@ function BuscadorConductores(props) {
               const editable = isEditing(record);
               return editable ? (
                 <span>
+                    <Button onClick={cancel} style={{marginLeft: 16, marginRight: 16}}><CloseOutlined/></Button>
                   <Popconfirm title="Guardar cambios?" cancelText="Cancelar" onCancel={cancel} onConfirm={() => save(record.key)}>
-                    <a style={{marginRight: 8}}>Guardar</a>
+                  <Tooltip placement="bottom" title="Guardar">
+                    <Button ><CheckOutlined/></Button>
+                    </Tooltip>
                   </Popconfirm>
-                  <Popconfirm title="Deshacer cambios?" cancelText="Cancelar" onConfirm={cancel}>
-                    <a>Cancelar</a>
-                  </Popconfirm>
+                  
                 </span>
               ) : (
                 <Space size="middle">
-                    <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-                    Editar
+                  <Typography.Link disabled={editingKey !== ''}>
+                      <Link hidden={editingKey !== ''} to={"/usuarios/buscar/" + record.usr_rut}>
+                      <Tooltip placement="bottom" title="Ver">
+                        <Button><EyeOutlined/></Button>
+                        </Tooltip>
+                      </Link>
                     </Typography.Link>
-                    <Popconfirm title="¿Desea eliminar usuario?" onConfirm={() => handleDelete(record.key)}>
-                        <a disabled={editingKey !== ''}>Eliminar</a>
+                    {hasPermission(rol, ['Administrador']) &&
+                    <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+                    <Tooltip placement="bottom" title="Editar">
+                      <Button disabled={editingKey !== ''}><EditOutlined/></Button>
+                      </Tooltip>
+                    </Typography.Link>
+                    }
+                    {hasPermission(rol, ['Administrador']) &&
+                    <Popconfirm title="¿Desea eliminar usuario?" cancelText="Cancelar" onConfirm={() => handleDelete(record.key)}>
+                    <Tooltip placement="bottom" title="Eliminar">
+                      <Button disabled={editingKey !== ''}><DeleteOutlined/></Button>
+                      </Tooltip>
                     </Popconfirm>
+                  }
                 </Space>
               );
             },
@@ -268,6 +319,7 @@ function BuscadorConductores(props) {
         return (
           <Form form={form} component={false}>
             <Table
+              scroll={{ x: 1000 }}
               loading={loading}
               components={{
                 body: {
@@ -291,10 +343,14 @@ function BuscadorConductores(props) {
 
     return (
         <Row style={{padding: 30}} justify="center" align="top">
-            <Col span={24}><h1 style={{fontSize: 25}}>Buscar conductores</h1></Col>
-            <Col span={24} style={{marginBottom: 25}}>
+          <Col span={24}>
+            <Card>
+            <Row >
+            <Col span={24}><h3>Buscar usuarios</h3></Col>
+            <Col xs={24} sm={24} md={24} lg={12} xl={10} style={{marginBottom: 25}}>
                 <Input.Search
                 allowClear
+                maxLength={40}
                 onSearch={onSearch}
                 onChange={handleChange}
                 disabled={searchDisabled}
@@ -307,7 +363,10 @@ function BuscadorConductores(props) {
             <EditableTable/>
             </Col>
         </Row>
+            </Card>
+          </Col>
+        </Row>
   );
 }
 
-export default BuscadorConductores;
+export default BuscadorUsuarios;
