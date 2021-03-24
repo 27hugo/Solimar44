@@ -3,10 +3,10 @@ import Reply from '../utils/Reply';
 
 const reply = new Reply();
 
-export default class ConductoresService{
+export default class UsuariosService{
 
-    obtenerConductores(){
-        return fetch( config.backendUrl + '/api/usuarios', {method: 'GET' })
+    obtenerUsuarios(){
+        return fetch( config.backendUrl + '/usuarios', {method: 'GET' })
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){
@@ -22,8 +22,8 @@ export default class ConductoresService{
         }) 
     }
 
-    consultarConductor(usr_rut){
-        return fetch( config.backendUrl + '/api/usuarios/' + usr_rut, {method: 'GET' })
+    consultarUsuario(usr_rut){
+        return fetch( config.backendUrl + '/usuarios/' + usr_rut, {method: 'GET' })
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){
@@ -39,12 +39,12 @@ export default class ConductoresService{
         }) 
     }
 
-    agregarConductor(conductor){
-        return fetch( config.backendUrl + '/api/usuarios', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(conductor) })
+    agregarUsuario(usuario){
+        return fetch( config.backendUrl + '/usuarios', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(usuario) })
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){
-                reply.setOk('Conductor agregado','Los datos han sido agregados con éxito.',res);
+                reply.setOk('Usuario agregado','Los datos han sido agregados con éxito.',res);
             }else{
                 reply.setError(res.message);
             }   
@@ -58,7 +58,7 @@ export default class ConductoresService{
 
 
     subirFotos(fotos){
-        return fetch( config.backendUrl + '/api/usuarios/subirFotos', {method: 'POST', body: fotos })
+        return fetch( config.backendUrl + '/usuarios/subirFotos', {method: 'POST', body: fotos })
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){
@@ -74,10 +74,25 @@ export default class ConductoresService{
         })
     }
 
+    actualizarDatosUsuario(usuario){
+        return fetch( config.backendUrl + '/usuarios/' + usuario.usr_rut, {method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(usuario) })
+        .then( async (response) => {
+            const res = await response.json();
+            if(response.ok && res.status !== "500"){
+                reply.setOk('Usuario actualizado','Los datos han sido actualizados con éxito.',res);
+            }else{
+                reply.setError(res.message);
+            }   
+            return reply.getResponse();
+        })
+        .catch(() => {
+            reply.setFatal();
+            return reply.getResponse();
+        }) 
+    }
 
-
-    eliminarConductor(usr_rut){
-        return fetch( config.backendUrl + '/api/usuarios/' + usr_rut, {method: 'DELETE' })
+    eliminarUsuario(usr_rut){
+        return fetch( config.backendUrl + '/usuarios/' + usr_rut, {method: 'DELETE' })
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){

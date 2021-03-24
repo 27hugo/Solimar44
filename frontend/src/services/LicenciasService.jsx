@@ -6,7 +6,7 @@ const reply = new Reply();
 export default class LicenciasService{
 
     agregarLicencia(licencia){
-        return fetch( config.backendUrl + '/api/licencias', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(licencia) })
+        return fetch( config.backendUrl + '/licencias', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(licencia) })
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){
@@ -23,7 +23,7 @@ export default class LicenciasService{
     }
 
     agregarTiposLicencias(tiposLicencias){
-        return fetch( config.backendUrl + '/api/tipos-licencias', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(tiposLicencias) })
+        return fetch( config.backendUrl + '/tipos-licencias', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(tiposLicencias) })
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){
@@ -41,7 +41,7 @@ export default class LicenciasService{
 
 
     subirFotosLicencia(fotos){
-        return fetch( config.backendUrl + '/api/licencias/subirFotos', {method: 'POST', body: fotos })
+        return fetch( config.backendUrl + '/licencias/subirFotos', {method: 'POST', body: fotos })
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){
@@ -58,7 +58,7 @@ export default class LicenciasService{
     }
 
     consultarLicencia(lic_id){
-        return fetch( config.backendUrl + '/api/licencias/' + lic_id, {method: 'GET' })
+        return fetch( config.backendUrl + '/licencias/' + lic_id, {method: 'GET' })
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){
@@ -75,7 +75,7 @@ export default class LicenciasService{
     }
     
     eliminarLicencia(lic_id){
-        return fetch( config.backendUrl + '/api/licencias/' + lic_id, {method: 'DELETE' })
+        return fetch( config.backendUrl + '/licencias/' + lic_id, {method: 'DELETE' })
         .then( async (response) => {
             const res = await response.json();
             if(response.ok && res.status !== "500"){
