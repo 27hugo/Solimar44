@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseInterceptors, UploadedFiles, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { existsSync, mkdirSync } from 'fs';
 import { rmdir } from 'fs/promises';
@@ -6,8 +6,8 @@ import { diskStorage } from 'multer';
 import { LicenciasService } from 'src/licencias/services/licencias.service';
 //import { UseGuards } from '@nestjs/common';
 //import { AuthGuard } from 'src/shared/auth.guard';
-
 import { UsuariosService } from './../services/usuarios.service';
+import * as bcrypt from 'bcrypt';
 
 @Controller('api/usuarios')
 //@UseGuards(new AuthGuard())
@@ -15,7 +15,7 @@ export class UsuariosController {
 
   constructor(
     private usuariosService: UsuariosService,
-    private licenciasService: LicenciasService
+    private licenciasService: LicenciasService,
   ) {}
 
   @Get()
@@ -29,8 +29,12 @@ export class UsuariosController {
   }
 
   @Post()
-  create(@Body() body: any ) {
-    return this.usuariosService.create(body);
+  async create(@Body() body: any ) {
+    if(body.usr_contrasena){
+      const hash = await bcrypt.hash(body.usr_contrasena, 10);
+      body.usr_contrasena = hash;
+    }
+    return await this.usuariosService.create(body);
   }
 
   @Post('subirFotos')
@@ -62,8 +66,12 @@ export class UsuariosController {
   }
 
   @Put(':usr_rut')
-  update(@Param('usr_rut') usr_rut: string, @Body() body: any) {
-    return this.usuariosService.update(usr_rut, body);
+  async update(@Param('usr_rut') usr_rut: string, @Body() body: any) {
+    if(body.usr_contrasena){
+      const hash = await bcrypt.hash(body.usr_contrasena, 10);
+      body.usr_contrasena = hash;
+    }
+    return await this.usuariosService.update(usr_rut, body);
   }
 
   @Delete(':usr_rut')

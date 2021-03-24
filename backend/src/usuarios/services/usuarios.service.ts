@@ -11,11 +11,11 @@ export class UsuariosService {
   ) {}
 
   findAll() {
-    return this.usuariosRepo.find();
+    return this.usuariosRepo.find({ relations: ['roles'] });
   }
 
   findOne(usr_rut: string) {
-    return this.usuariosRepo.findOne(usr_rut);
+    return this.usuariosRepo.findOne(usr_rut, { relations: ['roles'] });
   }
 
   async create(usr: Usuarios) {
