@@ -27,9 +27,9 @@ export class Usuarios {
   usr_contrasena: string;
 
   @Column()
-  usr_telefono: number;
+  usr_telefono: string;
 
-  @Column()
+  @Column({ default: 'Activo' })
   usr_estado: string;
 
   @Column({ unique: true, nullable: true })
