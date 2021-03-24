@@ -1,0 +1,35 @@
+version: "3"
+services:
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    env_file:
+      - ./env/environment.env
+  
+  backend:
+    build:
+      dockerfile: Dockerfile
+      context: ./backend
+    container_name: backend
+    depends_on:
+      - mariadb
+    volumes:
+      - ./backend/uploads/:/var/www/html
+    env_file:
+      - ./env/environment.env
+
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: ./frontend
+    ports:
+      - "80:80"
+    container_name: frontend
+    depends_on: 
+      - backend
+    volumes:
+      - ./frontend/uploads/:/var/www/html
+
+
+    
