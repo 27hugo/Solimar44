@@ -1,6 +1,6 @@
 var config = {
-    backendUrl: 'http://localhost:8080',
-    uploadsUrl: 'http://feria.localhost/uploads'
+    backendUrl: '/api',
+    uploadsUrl: '/uploads'
 };
 
 module.exports = config;
