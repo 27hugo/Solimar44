@@ -27,6 +27,11 @@ export class UsuariosAutosController {
     return this.usuariosAutosService.findByUsrRut(usr_rut);
   }
 
+  @Get('auto/:aut_id')
+  findByAutId(@Param('aut_id') aut_id: number){
+    return this.usuariosAutosService.findByAutId(aut_id);
+  }
+
   @Post()
   async create(@Body() body: any) {
     const uas = await this.usuariosAutosService.findByAutIdUsrRut(body.aut_id, body.usr_rut);
