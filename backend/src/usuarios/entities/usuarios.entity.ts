@@ -23,7 +23,7 @@ export class Usuarios {
   @Column({ unique: true, nullable: true })
   usr_correo: string;
 
-  @Column()
+  @Column({ nullable: true })
   usr_contrasena: string;
 
   @Column()
@@ -32,7 +32,7 @@ export class Usuarios {
   @Column({ default: 'Activo' })
   usr_estado: string;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ unique: true })
   usr_foto: string;
 
   @Column({ unique: true })

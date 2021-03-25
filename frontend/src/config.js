@@ -1,5 +1,5 @@
 var config = {
-    backendUrl: '/api',
+    backendUrl: '/api',  //'http://localhost:8080/api',
     uploadsUrl: '/uploads'
 };
 

@@ -70,7 +70,7 @@ function BuscadorUsuarios(props) {
         setLoading(true);
         const ds = [...dataSource];
         const dso = [...dataSourceOld];
-        const usr_rut = dataSource[key].usr_rut;
+        const usr_rut = ds[key].usr_rut;
         const response = await usuariosService.eliminarUsuario(usr_rut);
         if(response.status === 'ERROR' || response.status === 'FATAL'){
           notification[response.type]({ message: response.title, description: response.message });
@@ -175,7 +175,6 @@ function BuscadorUsuarios(props) {
               newData.splice(index, 1, { ...item, ...row });
               newDataOld.splice(indexDataOld, 1, { ...itemOld, ...row});
 
-              console.log("cambiando");
               const usuario = new Usuarios();
               usuario.usr_rut = newData[index].usr_rut;
               usuario.usr_nombre = newData[index].usr_nombre;

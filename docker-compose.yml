@@ -29,7 +29,7 @@ services:
     depends_on: 
       - backend
     volumes:
-      - ./frontend/uploads/:/var/www/html
+      - ./backend/uploads/:/var/www/html
 
 
     
