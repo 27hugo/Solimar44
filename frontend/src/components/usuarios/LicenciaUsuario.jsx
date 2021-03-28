@@ -14,7 +14,7 @@ function LicenciaUsuario(props) {
     
     const [usrLic, setUsrLic] = useState(null);
     
-    const uploads = 'http://localhost';
+    const uploads = config.uploadsUrl;
 
     function onSwitch(checked) {
         checked ? setUsrLic(licencia.lic_frente) : setUsrLic(licencia.lic_reverso)
