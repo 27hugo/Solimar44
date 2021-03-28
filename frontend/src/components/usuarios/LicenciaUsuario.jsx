@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Descriptions, Image, Select, Skeleton, Spin, Switch } from 'antd';
 import LicenciasService from '../../services/LicenciasService';
 import { UserOutlined, FileImageOutlined, CarOutlined, IdcardOutlined} from '@ant-design/icons';
-import TiposLicencias from '../../models/TiposLicencias';
+import TiposLicenciasArray from '../../utils/TiposLicencias';
+import config from '../../config';
 const licenciasService = new LicenciasService();
 
 
