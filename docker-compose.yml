@@ -15,7 +15,7 @@ services:
     depends_on:
       - mariadb
     volumes:
-      - ./backend/uploads/:/var/www/html
+      - ./backend/uploads/:/app/uploads
     env_file:
       - ./env/environment.env
 
