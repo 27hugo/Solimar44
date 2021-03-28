@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Descriptions, Image, Select, Skeleton, Spin, Switch } from 'antd';
 import LicenciasService from '../../services/LicenciasService';
 import { UserOutlined, FileImageOutlined, CarOutlined, IdcardOutlined} from '@ant-design/icons';
+import TiposLicencias from '../../models/TiposLicencias';
 const licenciasService = new LicenciasService();
 
 
@@ -21,10 +22,9 @@ function LicenciaUsuario(props) {
     }
 
     const children = [];
-    children.push(<Option key={1}>A1</Option>);
-    children.push(<Option key={2}>A2</Option>);
-    children.push(<Option key={3}>B1</Option>);
-    children.push(<Option key={4}>B2</Option>);
+    TiposLicenciasArray.forEach( (tipo, index) => {
+        children.push(<Option key={index}>{tipo}</Option>);
+    });
     
     useEffect(() => {
         licenciasService.consultarLicencia(props.lic_id).then(responseLicencia => {
