@@ -10,8 +10,7 @@ const usuariosService = new UsuariosService();
 const sessionService = new SessionService();
 
 class dataSourceItem{
-    constructor(key, usr_rut, usr_nombre, usr_apellido, usr_direccion, usr_correo, usr_telefono){
-        this.key = key;
+    constructor(usr_rut, usr_nombre, usr_apellido, usr_direccion, usr_correo, usr_telefono){
         this.usr_rut = usr_rut;
         this.usr_nombre = usr_nombre;
         this.usr_apellido = usr_apellido;
@@ -66,21 +65,21 @@ function BuscadorUsuarios(props) {
         setNameSearch(e.target.value);
     }
 
-    const handleDelete = async (key) => {
+    const handleDelete = async (usr_rut) => {
+        console.log(usr_rut);
         setLoading(true);
         const ds = [...dataSource];
         const dso = [...dataSourceOld];
-        const usr_rut = ds[key].usr_rut;
         const response = await usuariosService.eliminarUsuario(usr_rut);
         if(response.status === 'ERROR' || response.status === 'FATAL'){
           notification[response.type]({ message: response.title, description: response.message });
           setLoading(false);
           return;
         }
-        setDataSource(ds.filter((item) => item.key !== key) );
-        setDataSourceOld(dso.filter((item) => item.key !== key) );
+        setDataSource(ds.filter((item) => item.usr_rut !== usr_rut) );
+        setDataSourceOld(dso.filter((item) => item.usr_rut !== usr_rut) );
         setLoading(false);
-        notification[response.type]({ message: response.title, description: response.message });
+        //notification[response.type]({ message: response.title, description: response.message });*/
     };
 
     useEffect( async () => {
@@ -92,9 +91,9 @@ function BuscadorUsuarios(props) {
           return;
         }
         const usr_rut = sessionService.getUserData().usr_rut;
-        response.data.forEach( (usuario, index) => {
+        response.data.forEach( (usuario) => {
           if(usuario.usr_rut !== usr_rut)
-          usr.push(new dataSourceItem(index, usuario.usr_rut, usuario.usr_nombre, usuario.usr_apellido, usuario.usr_direccion, usuario.usr_correo, usuario.usr_telefono));
+          usr.push(new dataSourceItem(usuario.usr_rut, usuario.usr_nombre, usuario.usr_apellido, usuario.usr_direccion, usuario.usr_correo, usuario.usr_telefono));
         });
         
         setDataSource(usr);
@@ -147,27 +146,27 @@ function BuscadorUsuarios(props) {
         const [form] = Form.useForm();
         const [editingKey, setEditingKey] = useState('');
       
-        const isEditing = (record) => record.key === editingKey;
+        const isEditing = (record) => record.usr_rut === editingKey;
       
         const edit = (record) => {
           form.setFieldsValue({
             ...record,
           });
-          setEditingKey(record.key);
+          setEditingKey(record.usr_rut);
         };
       
         const cancel = () => {
           setEditingKey('');
         };
       
-        const save = async (key) => {
+        const save = async (usr_rut) => {
           try { 
             setLoading(true);
             const row = await form.validateFields();
             const newData = [...dataSource];
             const newDataOld = [...dataSourceOld];
-            const index = newData.findIndex((item) => key === item.key);
-            const indexDataOld = newDataOld.findIndex((item) => key === item.key);
+            const index = newData.findIndex((item) => usr_rut === item.usr_rut);
+            const indexDataOld = newDataOld.findIndex((item) => usr_rut === item.usr_rut);
      
             if (index > -1) {
               const item = newData[index];
@@ -181,8 +180,8 @@ function BuscadorUsuarios(props) {
               usuario.usr_apellido = newData[index].usr_apellido;
               usuario.usr_correo = newData[index].usr_correo;
               usuario.usr_telefono = newData[index].usr_telefono;
+              usuario.usr_direccion = newData[index].usr_direccion;
               
-              //console.log(usuario);
               let response = await usuariosService.actualizarDatosUsuario(usuario);
               if(response.status === 'ERROR' || response.status === 'FATAL'){
                   notification[response.type]({ message: response.title, description: response.message });
@@ -264,7 +263,7 @@ function BuscadorUsuarios(props) {
               return editable ? (
                 <span>
                     <Button onClick={cancel} style={{marginLeft: 16, marginRight: 16}}><CloseOutlined/></Button>
-                  <Popconfirm title="Guardar cambios?" cancelText="Cancelar" onCancel={cancel} onConfirm={() => save(record.key)}>
+                  <Popconfirm title="Guardar cambios?" cancelText="Cancelar" onCancel={cancel} onConfirm={() => save(record.usr_rut)}>
                   <Tooltip placement="bottom" title="Guardar">
                     <Button ><CheckOutlined/></Button>
                     </Tooltip>
@@ -288,7 +287,7 @@ function BuscadorUsuarios(props) {
                     </Typography.Link>
                     }
                     {hasPermission(rol, ['Administrador']) &&
-                    <Popconfirm title="¿Desea eliminar usuario?" cancelText="Cancelar" onConfirm={() => handleDelete(record.key)}>
+                    <Popconfirm title="¿Desea eliminar usuario?" cancelText="Cancelar" onConfirm={() => handleDelete(record.usr_rut)}>
                     <Tooltip placement="bottom" title="Eliminar">
                       <Button disabled={editingKey !== ''}><DeleteOutlined/></Button>
                       </Tooltip>
